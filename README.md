@@ -16,6 +16,8 @@ I haven't decided on the exact workflow 🦆 I'll be using yet. But we'll get it
 * Axios
 * Redux & Redux Toolkit
 * Twilio
+* formik(for forms building)
+* yup
 
 
 

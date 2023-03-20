@@ -39,6 +39,7 @@ const initialValuesLogin = {
 }
 
 const Form = () => {
+    const [userNot,setUserNot]=useState("null")
     const [pageType, setPageType] = useState("login")
     const { palette } = useTheme()
     const dispatch = useDispatch();
@@ -81,16 +82,26 @@ const Form = () => {
             }
         )
         const loggedIn = await loggedInResponse.json();
+        setUserNot(loggedIn?.msg)
+        console.log(loggedIn.msg)
         onSubmitProps.resetForm()
         if(loggedIn){
+            if(loggedIn.msg){
+                
+                setUserNot(loggedIn.msg)
+                console.log(userNot)
+            }
             dispatch(
                 setLogin({
+
                     user:loggedIn.user,
                     token:loggedIn.token,
+                    
                 })
             );
             navigate("/home")
         }
+        
     }
 
     const handleFormSubmit = async (values, onSubmitProps) => {
@@ -158,7 +169,7 @@ const Form = () => {
                             </>
                         )}
 
-
+                        <Typography>{userNot}</Typography>  
                         <TextField
                          label="Email" 
                          onBlur={handleBlur}

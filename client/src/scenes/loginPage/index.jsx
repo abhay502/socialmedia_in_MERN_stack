@@ -1,4 +1,5 @@
 import { Box,Typography,useTheme,useMediaQuery } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import Form from "./Form";
 
 
@@ -6,20 +7,33 @@ import Form from "./Form";
 
 const LoginPage = ()=>{
     const theme=useTheme();
+    const navigate = useNavigate();
+
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
     return(
         <Box>
             <Box width="100%" backgroundColor={theme.palette.background.alt} p="1rem 6%"  textAlign="center">
+                
             <Typography fontWeight="bold"
                     fontSize="32px"
                     color="primary"
-                  >SocioPEDIA</Typography>
+                    onClick={() => navigate("/")}
+                    sx={{
+                        "&:hover": {
+                            
+                            cursor: "pointer",
+
+                        },
+
+                    }}
+                    
+                  >Instagram </Typography>
             </Box>
 
             <Box width={isNonMobileScreens ? "50%" : "93%"} p="2rem" m="2rem auto" borderRadius="1.5rem" backgroundColor={theme.palette.background.alt}>
 
                 <Typography fontWeight="500" variant="h5" sx={{mb:"1.5rem"}}>
-                    welcome to Socipedia, the Social media for Sociopaths !
+                Create an account or log in to Instagram - A simple, fun & creative way to capture, edit & share photos, videos & messages with friends & family. !
                 </Typography>
                 <Form/>
             </Box>

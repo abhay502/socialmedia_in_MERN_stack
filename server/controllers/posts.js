@@ -73,3 +73,29 @@ export const likePost = async(req,res)=>{
         
     }
 }
+
+export const commentPost = async(req,res)=>{
+    try {
+
+        const {id}=req.params
+        const {userId}=req.body
+        const {comment}=req.body
+        const post = await Post.findById(id);
+        const isCommented = post.comments.includes(userId)
+
+        if(isCommented){
+            post.comments.pop(userId)
+        }else{
+            post.comments.push({userId:userId,comment:comment});
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(id,
+            { comments:post.comments },{new:true})
+            
+        res.status(200).json(updatedPost) //200 represents successfull request
+
+    } catch (error) {
+        res.status(404).json({message:error.message})
+        
+    }
+}

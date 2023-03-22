@@ -3,8 +3,9 @@ import {
     FavoriteBorderOutlined,
     FavoriteOutlined,
     ShareOutlined,
+    SendOutlined
   } from "@mui/icons-material";
-  import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+  import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme } from "@mui/material";
   import FlexBetween from "components/FlexBetween";
   import Friend from "components/Friend";
   import WidgetWrapper from "components/WidgetWrapper";
@@ -31,29 +32,54 @@ import {
     const likeCount = Object.keys(likes).length;
   
     const { palette } = useTheme();
-    const main = palette.neutral.main;
+    const main = palette.neutral.main; 
     const primary = palette.primary.main;
+
+
   
-    const patchLike = async () => {
+    const patchLike = async () => { //post liking section
       const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-        },
+        }, 
         
-        body: JSON.stringify({ userId: loggedInUserId }),
-      });
+        body: JSON.stringify({ userId: loggedInUserId }), 
+      });  
+      const updatedPost = await response.json();
+      dispatch(setPost({ post: updatedPost }));  //The setPost function is know as reducer.
+    };
+    
+
+
+    const [comment, setComment] = useState('');
+    const handleChange = (event) => {
+      setComment(event.target.value);
+    };
+    
+
+    const patchComment = async () => { //post commenting section
+      const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }, 
+        
+        body: JSON.stringify({ userId: loggedInUserId , comment: comment}), 
+      });  
       const updatedPost = await response.json();
       dispatch(setPost({ post: updatedPost }));
+      setComment(null)
     };
-  
+
     return (
       <WidgetWrapper m="2rem 0">
         <Friend
           friendId={postUserId}
           name={name}
-          subtitle={location}
+          subtitle={location} 
           userPicturePath={userPicturePath}
         />
         <Typography color={main} sx={{ mt: "1rem" }}>
@@ -95,14 +121,25 @@ import {
         </FlexBetween>
         {isComments && (
           <Box mt="0.5rem">
-            {comments.map((comment, i) => (
-              <Box key={`${name}-${i}`}>
-                <Divider />
-                <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                  {comment}
-                </Typography>
-              </Box>
-            ))}
+             <InputBase
+        placeholder="Add a comment"
+        value={comment}
+        onChange={handleChange}
+      
+      />
+      <Button type="submit" color="primary" sx={{ml:"12.5rem"}}
+       onClick={patchComment}>
+        <SendOutlined />
+      </Button>
+                      {comments.map((comment, i) => (
+                  <Box key={`${name}-${i}`}>
+                    <Divider />
+                    <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
+                      {comment.comment}
+                                        : {comment.userId}
+                    </Typography>
+                  </Box>
+                ))}
             <Divider />
           </Box>
         )}

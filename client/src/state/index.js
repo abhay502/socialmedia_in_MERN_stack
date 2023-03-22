@@ -5,16 +5,16 @@ const initialState = {
     user:null,
     token:null,
     posts:[],
-}; 
+};  
 
 export const authSlice = createSlice({
     name:"auth",
     initialState,
     reducers:{
-        setMode:(state)=>{
+        setMode:(state)=>{  //theme slice
             state.mode = state.mode === 'light' ? 'dark' : 'light';
         },
-        setLogin: (state, action)=>{
+        setLogin: (state, action)=>{  // login slice 
             state.user = action.payload.user;
             state.token = action.payload.token;  
         },

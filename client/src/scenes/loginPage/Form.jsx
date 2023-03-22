@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { json, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
@@ -39,7 +39,7 @@ const initialValuesLogin = {
 }
 
 const Form = () => {
-    const [userNot,setUserNot]=useState("null")
+   
     const [pageType, setPageType] = useState("login")
     const { palette } = useTheme()
     const dispatch = useDispatch();
@@ -72,37 +72,42 @@ const Form = () => {
         }
     }
 
-    const login = async (values, onSubmitProps)=>{
-        const loggedInResponse = await fetch(
-            "http://localhost:3001/auth/login",
-            {
-                method:"POST",
-                headers:{"Content-Type":"application/json"},
-                body: JSON.stringify(values),
-            }
-        )
-        const loggedIn = await loggedInResponse.json();
-        setUserNot(loggedIn?.msg)
-        console.log(loggedIn.msg)
-        onSubmitProps.resetForm()
-        if(loggedIn){
-            if(loggedIn.msg){
-                
-                setUserNot(loggedIn.msg)
-                console.log(userNot)
-            }
-            dispatch(
-                setLogin({
 
-                    user:loggedIn.user,
-                    token:loggedIn.token,
-                    
-                })
-            );
-            navigate("/home")
-        }
+    const [userNot, setUserNot] = useState(null);
+  
+    const login = async (values, onSubmitProps) => {
+      const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if(loggedInResponse.status === 400){
+        console.log(loggedInResponse.status)
+        setUserNot("Email or Password Incorrect ! Please Try Again 🙏")
+       
+      }else{
+        const loggedIn = await loggedInResponse.json();
+      onSubmitProps.resetForm();
+  
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
         
-    }
+        navigate("/home");
+      }
+      
+      
+      
+      
+    };
+    useEffect(() => {
+        console.log( userNot);
+      }, [userNot]);
+    
 
     const handleFormSubmit = async (values, onSubmitProps) => {
         if(isLogin) await login(values, onSubmitProps);
@@ -117,6 +122,9 @@ const Form = () => {
                 resetForm,
             }) => (
                 <form onSubmit={handleSubmit}>
+                    <Typography color="error" sx={{mb:"1.5rem"}}  >
+                            {userNot}
+                            </Typography>
                     <Box display="grid" gap="30px" gridTemplateColumns="repeat(4,minmax(0,1fr))"
                      sx={{ "& > div": { gridColumn: isNonMobile ? undefined : "span 4" }}}>
                         
@@ -169,7 +177,10 @@ const Form = () => {
                             </>
                         )}
 
-                        <Typography>{userNot}</Typography>  
+                           
+                            
+                        
+
                         <TextField
                          label="Email" 
                          onBlur={handleBlur}

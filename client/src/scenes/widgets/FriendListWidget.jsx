@@ -14,7 +14,7 @@ const FriendListWidget =({ userId }) => {
     const { palette } = useTheme()
     const token = useSelector((state)=> state.token)
     const friends = useSelector((state)=> state.user.friends);
-    // console.log(friends)
+     console.log(friends)
     // console.log(userId)
    
     const getFriends = async ()=>{
@@ -24,7 +24,7 @@ const FriendListWidget =({ userId }) => {
             method:"GET",
             headers:{Authorization:`Bearer ${token}`}
         });
-        console.log(response)
+       
         const data = await response.json();
         
         dispatch(setFriends({ friends:data}))
@@ -32,8 +32,8 @@ const FriendListWidget =({ userId }) => {
 
     useEffect(()=>{
         getFriends()
-    },[]);
-
+    },[]); 
+ 
     return(
         <WidgetWrapper>
             <Typography 

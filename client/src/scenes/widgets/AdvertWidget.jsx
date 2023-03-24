@@ -22,7 +22,7 @@ const AdvertWidget = ()=>{
                     Create Add
                 </Typography>
             </FlexBetween>
-            <img width="100%" height="auto" alt="Advert" scr="http://localhost:3001/assets/info3.jpeg" 
+            <img width="100%" height="auto" alt="Advert" scr={"http://localhost:3001/assets/info3.jpeg" }
              style={{ borderRadius:"0.75rem", margin:"0.75rem 0"}}
              />
              <FlexBetween>

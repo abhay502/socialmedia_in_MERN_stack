@@ -14,11 +14,13 @@ import { users, posts } from "./data/index.js"
 
 //local imports 
 import authRoutes from './routes/auth.js'
+import OTPRoutes from './routes/auth.js'
 import { verifyToken } from './middleware/auth.js';
 import {register} from './controllers/auth.js'
 import userRoutes from './routes/users.js'
 import postRoutes from './routes/posts.js'
 import {createPost} from './controllers/posts.js'
+
 
 
 //BACKEND CONFIGURATIONS
@@ -57,11 +59,12 @@ app.post("/posts", verifyToken,  upload.single("picture"), createPost)
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+app.use("/mobilenumber",OTPRoutes)
 
 
 
 
-
+ 
 
 
 

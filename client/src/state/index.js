@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
     mode:"light",
     user:null,
@@ -40,6 +41,8 @@ export const authSlice = createSlice({
 
             state.posts = updatedPosts;
         }
+        
+       
  
     }
 })

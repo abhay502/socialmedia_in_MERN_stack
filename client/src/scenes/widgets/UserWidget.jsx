@@ -2,7 +2,8 @@ import{
     ManageAccountsOutlined,
     EditOutlined,
     LocationOnOutlined,
-    WorkOutlineOutlined
+    WorkOutlineOutlined,
+    MessageOutlined
 } from '@mui/icons-material';
 import { Box, Typography, Divider, useTheme } from '@mui/material';
 import UserImage from 'components/UserImage';
@@ -15,6 +16,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 const UserWidget = ({userId, picturePath})=>{
+    const LoginUser = useSelector((state) => state.user);
+    console.log(LoginUser)
+    console.log(userId)
     const [user, setUser]= useState(null);
     const {palette} = useTheme();
     const navigate=useNavigate()
@@ -22,6 +26,7 @@ const UserWidget = ({userId, picturePath})=>{
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium
     const main = palette.neutral.main;
+    
 
     const getUser = async ()=>{
         const response = await fetch(`http://localhost:3001/users/${userId}`,
@@ -35,9 +40,9 @@ const UserWidget = ({userId, picturePath})=>{
     };
 
     useEffect(()=>{
-        getUser()
+        getUser() 
     },[])
-
+ 
     if(!user)return null;
 
     const { firstName,lastName,location,viewedProfile, impressions, friends } = user
@@ -62,13 +67,15 @@ const UserWidget = ({userId, picturePath})=>{
                             cursor:"pointer"
                          }
                         }}
-                        >
+                        > 
                         {firstName} {lastName}
                         </Typography>
                         <Typography color={medium}> {friends.length} friends</Typography>
                     </Box>
                 </FlexBetween>
-                <ManageAccountsOutlined/>
+                {LoginUser._id !== userId ? <MessageOutlined/> :  <ManageAccountsOutlined/>}
+
+               
                 </FlexBetween>
             
                 <Divider/>  {/* dividing FIRST ROW AND SECOND ROW */}
@@ -121,7 +128,8 @@ const UserWidget = ({userId, picturePath})=>{
                                 </Typography>
                             </Box>
                         </FlexBetween>
-                        <EditOutlined sx={{color:main}}/>
+                        
+                      {LoginUser._id !== userId ? null : <EditOutlined sx={{color:main}}/>}
                     </FlexBetween>
 
                     <FlexBetween gap="1rem" >
@@ -136,7 +144,8 @@ const UserWidget = ({userId, picturePath})=>{
                                 </Typography>
                             </Box>
                         </FlexBetween>
-                        <EditOutlined sx={{color:main}}/>
+                        {LoginUser._id !== userId ? null : <EditOutlined sx={{color:main}}/>}
+
                     </FlexBetween>
 
 

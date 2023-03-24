@@ -33,6 +33,11 @@ const UserSchema=mongoose.Schema({
         type:Array,
         default:[]
     },
+    number:{
+        type:Number,
+        required:true,
+        min:9
+    },
     location:String,
     viewedProfile:Number,
     impressions:Number

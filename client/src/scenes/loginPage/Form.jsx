@@ -20,7 +20,11 @@ const registerSchema = yup.object().shape({
 })
 
 const OtpLoginSchema = yup.object().shape({
-    number: yup.number().required("required")
+    number: yup
+    .number()
+    .typeError("must be a number")
+    .required("required")
+    .min(10, "must be at least 10 digits")
 })
 
 const OtpVerificationSchema = yup.object().shape({
@@ -32,7 +36,7 @@ const OtpVerificationSchema = yup.object().shape({
 
 const loginSchema = yup.object().shape({
     email: yup.string().email("invalid email").required("required"),
-    password: yup.string().required("required")
+    password: yup.string().required("required")  
 })
 
 const initialValuesRegister = {
@@ -220,6 +224,7 @@ const Form = () => {
                         error={Boolean(touched.number) && Boolean(errors.number)}
                         helperText={touched.number && errors.number}
                         sx={{display:"flex", m:"2rem 0"}} 
+
                         />   
 
 
@@ -231,11 +236,11 @@ const Form = () => {
                         : isOTPVerifyPage ?  <>  
                        
                         <TextField
-                        label="OTP"
+                        label="Enter OTP"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        value={values.number}
-                        name="number"
+                        value={values.otp}
+                        name="otp"
                         error={Boolean(touched.number) && Boolean(errors.number)}
                         helperText={touched.number && errors.number}
                         sx={{ gridColumn: "span 4" }} />   

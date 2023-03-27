@@ -79,14 +79,17 @@ export const commentPost = async(req,res)=>{
 
         const {id}=req.params
         const {userId}=req.body
+        const {Username}=req.body;
         const {comment}=req.body
+        const {userPicture}=req.body;
+        
         const post = await Post.findById(id);
         const isCommented = post.comments.includes(userId)
 
         if(isCommented){
             post.comments.pop(userId)
         }else{
-            post.comments.push({userId:userId,comment:comment});
+            post.comments.push({userId:userId,comment:comment,Username:Username,userPicture:userPicture});
         }
 
         const updatedPost = await Post.findByIdAndUpdate(id,

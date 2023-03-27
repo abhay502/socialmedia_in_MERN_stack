@@ -6,11 +6,14 @@ import {
     SendOutlined
   } from "@mui/icons-material";
   import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme } from "@mui/material";
+import { color } from "@mui/system";
   import FlexBetween from "components/FlexBetween";
   import Friend from "components/Friend";
+import UserImage from "components/UserImage";
   import WidgetWrapper from "components/WidgetWrapper";
   import { useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
   import { setPost } from "state";
   
   const PostWidget = ({
@@ -27,7 +30,13 @@ import {
     const [isComments, setIsComments] = useState(false);
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
+
     const loggedInUserId = useSelector((state) => state.user._id);
+    const user = useSelector((state) => state.user);
+    
+    // console.log(UserpicturePath.picturePath +"picture")
+
+    const navigate = useNavigate()
     const isLiked = Boolean(likes[loggedInUserId]);
     const likeCount = Object.keys(likes).length;
   
@@ -35,7 +44,9 @@ import {
     const main = palette.neutral.main; 
     const primary = palette.primary.main;
 
-
+    const fullName = `${user?.firstName}  ${user?.lastName}`
+  
+    console.log(fullName)
   
     const patchLike = async () => { //post liking section
       const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
@@ -45,7 +56,7 @@ import {
           "Content-Type": "application/json",
         }, 
         
-        body: JSON.stringify({ userId: loggedInUserId }), 
+        body: JSON.stringify({ userId: user._id, Username:fullName,  }), 
       });  
       const updatedPost = await response.json();
       dispatch(setPost({ post: updatedPost }));  //The setPost function is know as reducer.
@@ -67,7 +78,7 @@ import {
           "Content-Type": "application/json",
         }, 
         
-        body: JSON.stringify({ userId: loggedInUserId , comment: comment}), 
+        body: JSON.stringify({ userId: loggedInUserId,Username:fullName , comment: comment,userPicture:user.picturePath}), 
       });  
       const updatedPost = await response.json();
       dispatch(setPost({ post: updatedPost }));
@@ -134,9 +145,22 @@ import {
                       {comments.map((comment, i) => (
                   <Box key={`${name}-${i}`}>
                     <Divider />
-                    <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                      {comment.comment}
-                                        : {comment.userId}
+                    <Typography sx={{  color: main, m: "0.5rem 0", pl: "1rem" }}>
+                         <Box sx={{display:"flex"}}>
+                          <UserImage picturePath={comment.userPicture}/>
+                         <Typography
+                           onClick={() => {
+                            navigate(`/profile/${comment.userId}`);
+                            navigate(0);  
+                          }}
+                         sx={ {cursor:"pointer", fontSize:15, fontWeight:"semi-bold"}}> {comment.Username} : </Typography>
+                        <Typography sx={{ml:"0.5rem"}}>{comment.comment}</Typography>
+                         </Box>
+                        
+                      
+                    
+                      
+                                        
                     </Typography>
                   </Box>
                 ))}

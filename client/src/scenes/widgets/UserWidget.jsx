@@ -5,7 +5,7 @@ import{
     WorkOutlineOutlined,
     MessageOutlined
 } from '@mui/icons-material';
-import { Box, Typography, Divider, useTheme } from '@mui/material';
+import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
 import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 const UserWidget = ({userId, picturePath})=>{
+    const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+
     const LoginUser = useSelector((state) => state.user);
     console.log(LoginUser)
     console.log(userId)
@@ -41,14 +43,14 @@ const UserWidget = ({userId, picturePath})=>{
 
     useEffect(()=>{
         getUser() 
-    },[])
+    },[]) 
  
     if(!user)return null;
 
     const { firstName,lastName,location,viewedProfile, impressions, friends } = user
 
     return(
-        <WidgetWrapper>
+        <WidgetWrapper position={isNonMobileScreens ? "fixed" : undefined}   zIndex="999"  >
             <FlexBetween 
              gap="0.5rem"
              pb="1.1rem"

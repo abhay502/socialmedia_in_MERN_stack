@@ -19,6 +19,8 @@ const Navbar = () => {
     // console.log(user) 
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
 
+    
+    
     const theme = useTheme();
     const neutralLight = theme.palette.neutral.light;
     const dark = theme.palette.neutral.dark;
@@ -28,8 +30,13 @@ const Navbar = () => {
 
     const fullName = `${user?.firstName}  ${user?.lastName}`
 
+    const [search, setSearch] = useState("");
+    const handleChange = (e) =>{
+        setSearch(e.target.value)
+    }
+    console.log(search)
     return (
-        <FlexBetween padding='1rem 6% ' backgroundColor={alt}>
+        <FlexBetween marginBottom="1rem" padding='1rem 6% ' backgroundColor={alt} position="fixed" top="0" left="0" width="100%" zIndex="999"  >
             <FlexBetween gap="1.75rem">
                 <Typography fontWeight="bold"
                     fontSize="clamp(1rem,2rem,2.25rem)"
@@ -45,8 +52,8 @@ const Navbar = () => {
                     }}>Instagram</Typography>
                 {isNonMobileScreens && (
                     <FlexBetween backgroundColor={neutralLight} borderRadius="9px" gap="3rem" padding="0.1rem 1.5rem">
-                        <InputBase placeholder="Search.." />
-                        <IconButton>
+                        <InputBase placeholder="Search.." onChange={handleChange} value={search}  />
+                           <IconButton>
                             <Search />
                         </IconButton>
 

@@ -5,6 +5,9 @@ export const createPost = async (req,res)=>{
     try {
         const { userId, description, picturePath } = req.body; 
         const user = await User.findById(userId)
+        const currentDate = new Date() 
+        //  .toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
         const newPost = new Post({
             userId,
             firstName:user.firstName,
@@ -14,11 +17,12 @@ export const createPost = async (req,res)=>{
             userPicturePath:user.picturePath,
             picturePath,
             likes:{},
-            comments:[]
+            comments:[],
+            createdAt: currentDate
         })
         await  newPost.save();
 
-        const post = await Post.find(); //this will find all the posts to front end after creating a new posts.
+        const post = await Post.find().sort({_id:-1}); //this will find all the posts to front end after creating a new posts.
         res.status(201).json(post) //201 represents created something
     } catch (error) {
         res.status(409).json({message:error.message})
@@ -28,7 +32,7 @@ export const createPost = async (req,res)=>{
 export const getFeedPosts = async (req,res) =>{
     try {
         
-        const post = await Post.find(); //this will find all the posts to front end after creating a new posts.
+        const post = await Post.find().sort({ _id: -1 }); //this will find all the posts to front end after creating a new posts.
         res.status(200).json(post) //200 represents successfull request
 
     } catch (error) {
@@ -84,13 +88,13 @@ export const commentPost = async(req,res)=>{
         const {userPicture}=req.body;
         
         const post = await Post.findById(id);
-        const isCommented = post.comments.includes(userId)
+        // const isCommented = post.comments.includes(userId)
 
-        if(isCommented){
-            post.comments.pop(userId)
-        }else{
-            post.comments.push({userId:userId,comment:comment,Username:Username,userPicture:userPicture});
-        }
+        // if(isCommented){
+        //     post.comments.pop(userId)
+        // }else{
+            post.comments.unshift({userId:userId,comment:comment,Username:Username,userPicture:userPicture, createdAt: new Date()});
+        // }
 
         const updatedPost = await Post.findByIdAndUpdate(id,
             { comments:post.comments },{new:true})

@@ -71,18 +71,23 @@ import { useNavigate } from "react-router-dom";
     
 
     const patchComment = async () => { //post commenting section
-      const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        }, 
-        
-        body: JSON.stringify({ userId: loggedInUserId,Username:fullName , comment: comment,userPicture:user.picturePath}), 
-      });  
-      const updatedPost = await response.json();
-      dispatch(setPost({ post: updatedPost }));
-      setComment(null)
+      setComment('');
+      if(comment){
+        const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }, 
+          
+          body: JSON.stringify({ userId: loggedInUserId,Username:fullName , comment: comment,userPicture:user.picturePath}), 
+        });  
+        const updatedPost = await response.json();
+        console.log(updatedPost)
+        dispatch(setPost({ post: updatedPost }));
+        setComment(null)
+      }
+     
     };
 
     return (
@@ -147,14 +152,23 @@ import { useNavigate } from "react-router-dom";
                     <Divider />
                     <Typography sx={{  color: main, m: "0.5rem 0", pl: "1rem" }}>
                          <Box sx={{display:"flex"}}>
-                          <UserImage picturePath={comment.userPicture}/>
+                        <img 
+                          src={`http://localhost:3001/assets/${comment.userPicture}`} 
+                          style={{
+                            width: "26px",
+                            height: "25px",
+                            borderRadius: "50%",
+                            marginRight:"5px",
+                            objectFit: "cover"
+                          }} 
+                          alt="profilepic" />
                          <Typography
                            onClick={() => {
                             navigate(`/profile/${comment.userId}`);
                             navigate(0);  
                           }}
                          sx={ {cursor:"pointer", fontSize:15, fontWeight:"semi-bold"}}> {comment.Username} : </Typography>
-                        <Typography sx={{ml:"0.5rem"}}>{comment.comment}</Typography>
+                        <Typography sx={{ml:"0.5rem", mt:"0.1rem"}}>{comment.comment}</Typography>
                          </Box>
                         
                       

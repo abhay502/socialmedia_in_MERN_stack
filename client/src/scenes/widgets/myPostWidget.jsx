@@ -3,7 +3,7 @@ import {
     ImageOutlined, MicOutlined, MoreHorizOutlined
 } from "@mui/icons-material";
 
-import { Box, Divider, Typography, InputBase, useTheme, Button, IconButton, useMediaQuery } from "@mui/material";
+import { Box, Divider, Typography, InputBase, useTheme, Button, IconButton, useMediaQuery,Alert,AlertTitle } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
@@ -25,32 +25,49 @@ const MyPostWidget = ({ picturePath }) => {
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
+    const [postAlert,setPostAlert]= useState(false)
 
     const handlePost = async () => {
 
         const formData = new FormData();
-        formData.append("userId", _id);
-        formData.append("description", post);
-        if (image) {
-            formData.append("picture", image);
-            formData.append("picturePath", image.name);
+        if(post){
+
+            formData.append("userId", _id);
+            formData.append("description", post);
+            if (image) {
+                formData.append("picture", image);
+                formData.append("picturePath", image.name);
+            }
+    
+            const response = await fetch(`http://localhost:3001/posts`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData
+            });
+    
+            const posts = await response.json();
+            dispatch(setPosts({ posts }));
+            setImage(null)
+            setPost("")
+        }else{
+            setPostAlert(true)
         }
-
-        const response = await fetch(`http://localhost:3001/posts`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData
-        });
-
-        const posts = await response.json();
-        dispatch(setPosts({ posts }));
-        setImage(null)
-        setPost("")
+      
     }
 
     return (
 
         <WidgetWrapper>
+            {postAlert ? 
+            <Box mb="1rem">
+                 <Alert  severity="error">
+              <AlertTitle>Error</AlertTitle>
+                 Please add an image or desciption. <strong>Fields are empty!</strong>
+                </Alert> 
+            </Box>: null
+            }
+             
+
             <FlexBetween gap="1.5rem">
                 <UserImage image={picturePath} />
                 <InputBase

@@ -39,8 +39,8 @@ const ProfilePage = () => {
 
     return (
         <Box>
-            <Navbar />
-            <Box>
+            <Navbar  />
+            <Box marginTop="5rem">
 
                 <Box width="100%"
                     padding="2rem 6%"

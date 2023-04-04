@@ -14,7 +14,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
 
   const friends = useSelector((state) => state.user.friends);
   const friendsArray = Object.values(friends);
-  console.log()
+  
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;

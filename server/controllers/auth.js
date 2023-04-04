@@ -62,3 +62,26 @@ export const sendPhoneNumber = async (req,res)=>{
         res.status(500).json({error:error.message})
     }
 } 
+
+
+export const sendOTP = async (req,res)=>{
+    try {
+        const otp = req.body;
+        console.log(otp)
+        const mobileNumber = number.number
+        const user = await User.findOne({number:mobileNumber});
+
+        if(user){
+            console.log(user+"This is user..")
+       
+            const token = jwt.sign({ id:user._id }, process.env.JWT_SECRET);
+            res.status(200).json(mobileNumber) 
+        }else{
+            res.status(400).json({error:"Number Doesn't exist"})
+        }
+      
+    } catch (error) {
+        res.status(500).json({error:error.message})
+    }
+} 
+

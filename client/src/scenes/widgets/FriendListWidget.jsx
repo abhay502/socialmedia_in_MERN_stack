@@ -15,9 +15,8 @@ const FriendListWidget =({ userId }) => {
     const { palette } = useTheme()
     const token = useSelector((state)=> state.token)           
     const friends = useSelector((state)=> state.user.friends); 
-    console.log(friends)
-    // console.log(userId) 
-      
+    
+    
     const getFriends = async ()=>{ 
        
         const response = await fetch(`http://localhost:3001/users/${userId}/friends`,
@@ -28,7 +27,7 @@ const FriendListWidget =({ userId }) => {
        
         const data = await response.json();
         
-        dispatch(setFriends({ friends:data}))
+        dispatch(setFriends({ friends:data})) 
     };
 
     useEffect(()=>{   
@@ -43,7 +42,7 @@ const FriendListWidget =({ userId }) => {
             fontWeight="500"
             sx={{ mb:"1.5rem"}}
             >
-               {friends.length<1? "0 Friends" : friends.length+ " Friends in your List" } 
+               {friends.length<1? "0 Friends" : friends.length+ " Friends  List" } 
             </Typography>
 
             <Box display="flex" flexDirection="column" gap="1.5rem">

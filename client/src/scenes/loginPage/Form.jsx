@@ -58,12 +58,11 @@ const initialValuesOtp = {
     number:''
 }
 const initialVerifyOTP = {
-    OTP:''
+    otp:''
 }
 const Form = () => {
     //page-types
     const [pageType, setPageType] = useState("login")
-    console.log(pageType)
     const isLogin = pageType === "login";
     const isRegister = pageType === "register"
     const isOTPNumberPage = pageType === "OTPNumberPage"
@@ -116,7 +115,6 @@ const Form = () => {
         });
 
         if (loggedInResponse.status === 400) {
-            console.log(loggedInResponse.status)
             setUserNot("Email or Password Incorrect ! Please Try Again 🙏")
 
         } else {
@@ -135,15 +133,15 @@ const Form = () => {
 
     };
 
-    const OtpLogin = async (values, onSubmitProps)=>{
-        // console.log(values)
+    const OtpLogin = async (values, onSubmitProps)=> {
+        console.log("Krishhhh"+values)
         const OtpResponse = await fetch("http://localhost:3001/mobilenumber/phone", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         });
-        // console.log(OtpResponse)
-        onSubmitProps.resetForm()
+        
+        onSubmitProps.resetForm() 
         
         if(OtpResponse.status === 200){
 
@@ -167,25 +165,26 @@ const Form = () => {
     }
 
     const verifyOTP = async (values, onSubmitProps)=>{
-        console.log("abayyyyy")
-        console.log(values.number)
-        // const verifyOTPResponse = await fetch("http://localhost:3001/auth/verifyOTP", {
+      console.log("yoyoyoyoyoy"+values)
+        // const verifyOTPResponse = await fetch("http://localhost:3001/mobilenumber/otp", {
         //     method: "POST",
         //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(values.number),
+        //     body: JSON.stringify(values),
         // });
+
+        onSubmitProps.resetForm() 
     }
 
     useEffect(() => {
-        console.log(userNot);
+        
     }, [userNot]);
 
    useEffect(()=>{
-    console.log(OTPSendNum)
+   
    },[OTPSendNum])
 
    useEffect(()=>{
-    console.log(numberNotExist)
+    
    },[numberNotExist])
 
 
@@ -194,10 +193,13 @@ const Form = () => {
         
         if (isLogin) await login(values, onSubmitProps);
         if (isRegister) await register(values, onSubmitProps);
-        if (isOTPNumberPage) await OtpLogin({ number: values.number },onSubmitProps) 
+        if (isOTPNumberPage) await OtpLogin({ number: values.number },onSubmitProps)   
         if (isOTPVerifyPage) await  verifyOTP({ number: values.number },onSubmitProps)
-    } 
 
+
+    } 
+    console.log(pageType)
+    
     return (
         <Formik onSubmit={handleFormSubmit} initialValues={isLogin ? initialValuesLogin : isOTPNumberPage ? initialValuesOtp : isOTPVerifyPage ? initialVerifyOTP : initialValuesRegister}
             validationSchema={isLogin ? loginSchema : isOTPNumberPage ? OtpLoginSchema : isOTPVerifyPage ? OtpVerificationSchema : registerSchema}>
@@ -216,7 +218,7 @@ const Form = () => {
                     {isOTPNumberPage  ? 
                      <> 
                      <TextField
-                        label="Phone Number"
+                        label="Phone Numberrrr" 
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.number}
@@ -233,9 +235,10 @@ const Form = () => {
                         
                         </>       
                         
-                        : isOTPVerifyPage ?  <>  
+                        : isOTPVerifyPage ?
+                       <>  
                        
-                        <TextField
+                       <TextField
                         label="Enter OTP"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -243,7 +246,8 @@ const Form = () => {
                         name="otp"
                         error={Boolean(touched.number) && Boolean(errors.number)}
                         helperText={touched.number && errors.number}
-                        sx={{ gridColumn: "span 4" }} />   
+                        sx={{ gridColumn: "span 4" }} 
+                        /> 
                         {OTPSendNum ? <Typography color="greenyellow">OTP has been send to - {OTPSendNum}</Typography> : null}
                         </>       :
                         
@@ -256,7 +260,7 @@ const Form = () => {
 
                         {isRegister && (
                             <>
-
+  
 
 
                                 <TextField label="First Name" onBlur={handleBlur}
@@ -366,12 +370,12 @@ const Form = () => {
                             {isLogin ? "LOGIN"  : "REGISTER" }
                         </Button> : null }
 
-                       {isLogin ?  <Button
+                       {isLogin ?  
+                       <Button
                             fullWidth
-                            // type="submit"
+                             type="button"
                             onClick={() => {
                                 setPageType(isLogin ? "OTPNumberPage" : "OTPVerifyPage");
-                                resetForm();
                             }}
                             sx={{
                                 m: "2rem 0",
@@ -381,13 +385,12 @@ const Form = () => {
                                 "&:hover": { color: palette.primary.main }
                             }}
                         >
-                            {isLogin ? "LOGIN WITH OTP"  : "SEND OTP"}
-                        </Button>      :
-                        
-                        isOTPNumberPage ? <Button
+                            {isLogin ? "LOGIN WITH OTP"  : "abhay"}
+                        </Button> 
+                        : isOTPNumberPage || isOTPVerifyPage ? <Button
                             fullWidth
                             type="submit"
-                            
+                             
                             sx={{
                                 m: "2rem 0",
                                 p: "1rem ",
@@ -397,25 +400,11 @@ const Form = () => {
                             }}
                         >
                             {isOTPNumberPage ? "SEND OTP"  : "VERIFY OTP"}
-                        </Button> : 
+                        </Button> :   null
+                        }
                         
-                        isOTPVerifyPage ? <Button
-                            fullWidth
-                            type="submit"
-                            // onClick={() => {
-                            //     setPageType( "OTPVerifyPage");
-                            //     resetForm();
-                            // }}
-                            sx={{
-                                m: "2rem 0",
-                                p: "1rem ",
-                                backgroundColor: palette.primary.main,
-                                color: palette.background.alt,
-                                "&:hover": { color: palette.primary.main }
-                            }}
-                        >
-                            VERIFY OTP
-                        </Button> : null}
+                        
+                      
 
                         
                     </Box>

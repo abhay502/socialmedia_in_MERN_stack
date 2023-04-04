@@ -16,7 +16,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
-    // console.log(user) 
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
 
     
@@ -34,7 +33,6 @@ const Navbar = () => {
     const handleChange = (e) =>{
         setSearch(e.target.value)
     }
-    console.log(search)
     return (
         <FlexBetween marginBottom="1rem" padding='1rem 6% ' backgroundColor={alt} position="fixed" top="0" left="0" width="100%" zIndex="999"  >
             <FlexBetween gap="1.75rem">

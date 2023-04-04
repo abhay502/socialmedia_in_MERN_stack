@@ -34,7 +34,6 @@ import { useNavigate } from "react-router-dom";
     const loggedInUserId = useSelector((state) => state.user._id);
     const user = useSelector((state) => state.user);
     
-    // console.log(UserpicturePath.picturePath +"picture")
 
     const navigate = useNavigate()
     const isLiked = Boolean(likes[loggedInUserId]);
@@ -46,7 +45,6 @@ import { useNavigate } from "react-router-dom";
 
     const fullName = `${user?.firstName}  ${user?.lastName}`
   
-    console.log(fullName)
   
     const patchLike = async () => { //post liking section
       const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
@@ -83,7 +81,6 @@ import { useNavigate } from "react-router-dom";
           body: JSON.stringify({ userId: loggedInUserId,Username:fullName , comment: comment,userPicture:user.picturePath}), 
         });  
         const updatedPost = await response.json();
-        console.log(updatedPost)
         dispatch(setPost({ post: updatedPost }));
         setComment(null)
       }

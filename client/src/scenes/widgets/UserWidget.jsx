@@ -19,8 +19,6 @@ const UserWidget = ({userId, picturePath})=>{
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
     const LoginUser = useSelector((state) => state.user);
-    console.log(LoginUser)
-    console.log(userId)
     const [user, setUser]= useState(null);
     const {palette} = useTheme();
     const navigate=useNavigate()

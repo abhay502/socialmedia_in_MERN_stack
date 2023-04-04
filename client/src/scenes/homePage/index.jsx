@@ -6,7 +6,7 @@ import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import MyPostWidget from "scenes/widgets/myPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
-import UserWidget from "scenes/widgets/UserWidget";
+import UserWidget from "scenes/widgets/UserWidget"; 
 import Navbar from "../navbar/Navbar"
 
  
@@ -16,7 +16,6 @@ const HomePage = ()=>{
     const { _id,picturePath }=useSelector((state)=> state.user);
    
     const friends = useSelector((state)=> state.user.friends);
-    console.log(friends)
   
 
     return(

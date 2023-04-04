@@ -164,7 +164,7 @@ const MyPostWidget = ({ picturePath }) => {
                     </FlexBetween>
                     )}
                 <Button 
-                disable={!post}
+                // disable={!post}
                 onClick={handlePost}
                 sx={{
                     color:palette.background.alt,

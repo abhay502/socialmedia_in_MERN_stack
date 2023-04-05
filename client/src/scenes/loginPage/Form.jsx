@@ -215,8 +215,8 @@ const Form = () => {
                         {isLogin ? "Login Page ⚙️" : isOTPNumberPage && !isOTPVerifyPage ? "OTP Login Page" : isOTPVerifyPage ? "Please enter OTP" : "Sign Up Page ⚙️"}
                     </Typography>
                      
-                    {isOTPNumberPage  ? 
-                     <> 
+                    {isOTPNumberPage  ?  
+                     <>  
                      <TextField
                         label="Phone Numberrrr" 
                         onBlur={handleBlur}

@@ -20,7 +20,7 @@ const HomePage = ()=>{
 
     return(
        
-            <Box> 
+            <Box  > 
 
                 <Navbar   />
                 <Box width="100%" 
@@ -29,6 +29,7 @@ const HomePage = ()=>{
                   gap="0.5rem"
                   justifyContent="space-between"
                   marginTop="5rem"
+                  position="relative"
                   >
                     <Box  flexBasis={isNonMobileScreens ? "26%" : undefined}>
                         <UserWidget userId={_id} picturePath={picturePath} />

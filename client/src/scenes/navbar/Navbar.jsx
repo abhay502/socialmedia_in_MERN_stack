@@ -1,13 +1,20 @@
 
-import { useState } from "react"
-import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery } from "@mui/material"
+import { useEffect, useState } from "react"
+import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Avatar, } from "@mui/material"
 
-import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from "@mui/icons-material"
+import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close, List,
+    } from "@mui/icons-material"
 
 import { useDispatch, useSelector } from "react-redux"
 import { setMode, setLogout } from "state"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 import FlexBetween from "components/FlexBetween";
+import SearchResults from "./SearchResult"
+
+
 
 
 
@@ -16,10 +23,12 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
-    const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
+    const token = useSelector((state) => state.token);
+
+    const isNonMobileScreens = useMediaQuery("(min-width:1000px)") 
 
     
-    
+      
     const theme = useTheme();
     const neutralLight = theme.palette.neutral.light;
     const dark = theme.palette.neutral.dark;
@@ -29,11 +38,39 @@ const Navbar = () => {
 
     const fullName = `${user?.firstName}  ${user?.lastName}`
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(""); 
+    const [searchedResults,setSearchedResults] = useState("")
     const handleChange = (e) =>{
         setSearch(e.target.value)
     }
+    
+    
+    const searchUsers = async ()=>{
+
+        const response = await fetch(`http://localhost:3001/users/searchUsers`,{
+            method:"POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              }, 
+              body: JSON.stringify({ searchKey:search }), 
+        })
+
+       
+        const Results = await response.json();
+        setSearchedResults(Results);
+    }
+
+    useEffect(()=>{
+      searchUsers()
+    },[search])
+
+ const resultsArray = Object.values(searchedResults);
+//  console.log(resultsArray)
+
+
     return (
+        <>
         <FlexBetween marginBottom="1rem" padding='1rem 6% ' backgroundColor={alt} position="fixed" top="0" left="0" width="100%" zIndex="999"  >
             <FlexBetween gap="1.75rem">
                 <Typography fontWeight="bold"
@@ -49,13 +86,18 @@ const Navbar = () => {
 
                     }}>Instagram</Typography>
                 {isNonMobileScreens && (
+                    <>
                     <FlexBetween backgroundColor={neutralLight} borderRadius="9px" gap="3rem" padding="0.1rem 1.5rem">
                         <InputBase placeholder="Search.." onChange={handleChange} value={search}  />
                            <IconButton>
                             <Search />
+                            
                         </IconButton>
-
+                      
                     </FlexBetween>
+                    
+                       
+                    </>
                 )}
                 {/* DESKTOP NAV */}
                 {isNonMobileScreens ? (
@@ -148,10 +190,18 @@ const Navbar = () => {
                     </Box>
                 )}
             </FlexBetween>
-
-
+            
+          
         </FlexBetween>
-    )
+        <Box  marginBottom="1rem" padding='1rem 6% '  position="" top="0" left="0" width="35%">
+        <SearchResults results={resultsArray}/> 
+            
+        </Box>
+     
+
+        </>
+        
+    ) 
 }
 
 export default Navbar 

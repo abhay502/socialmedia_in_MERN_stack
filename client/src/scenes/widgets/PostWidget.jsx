@@ -3,7 +3,8 @@ import {
     FavoriteBorderOutlined,
     FavoriteOutlined,
     ShareOutlined,
-    SendOutlined
+    SendOutlined,
+    DeleteForeverOutlined
   } from "@mui/icons-material";
   import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme } from "@mui/material";
 import { color } from "@mui/system";
@@ -26,6 +27,7 @@ import { useNavigate } from "react-router-dom";
     userPicturePath,
     likes,
     comments,
+    date
   }) => {
     const [isComments, setIsComments] = useState(false);
     const dispatch = useDispatch();
@@ -61,7 +63,7 @@ import { useNavigate } from "react-router-dom";
     };
     
 
-
+ 
     const [comment, setComment] = useState('');
     const handleChange = (event) => {
       setComment(event.target.value);
@@ -87,17 +89,42 @@ import { useNavigate } from "react-router-dom";
      
     };
 
-    return (
-      <WidgetWrapper m="2rem 0">
+    const deleteComment = async () =>{
+      console.log(postId)
+      console.log(user._id)
+      const response = await fetch(`http://localhost:3001/posts/${postId}/deleteComment`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", 
+        }, 
+        
+        body: JSON.stringify({ userId: user._id, Username:fullName,  }), 
+      });  
+      const updatedPost = await response.json();
+      dispatch(setPost({ post: updatedPost })); 
+    }
+
+    return ( 
+      <>
+      
+        <WidgetWrapper m="2rem 0">
+
         <Friend
           friendId={postUserId}
           name={name}
           subtitle={location} 
           userPicturePath={userPicturePath}
+          postId={postId}
         />
-        <Typography color={main} sx={{ mt: "1rem" }}>
+        <Typography color={main} sx={{ mt: "1rem " }}>
           {description}
         </Typography>
+
+        <Typography color={main} sx={{ ml: "23rem",mt:"-1.1rem",fontSize:12}}>  
+          {date}
+        </Typography>
+
         {picturePath && (
           <img
             width="100%"
@@ -166,11 +193,16 @@ import { useNavigate } from "react-router-dom";
                           }}
                          sx={ {cursor:"pointer", fontSize:15, fontWeight:"semi-bold"}}> {comment.Username} : </Typography>
                         <Typography sx={{ml:"0.5rem", mt:"0.1rem"}}>{comment.comment}</Typography>
+                        
+                           
                          </Box>
                         
                       
-                    
-                      
+                         {user._id === comment.userId ? <Button type="submit" color="primary" sx={{ml:"21.0rem", mt:"-2.5rem"}}
+                          onClick={deleteComment}>
+                          <DeleteForeverOutlined />
+                        </Button>: null }
+                          
                                         
                     </Typography>
                   </Box>
@@ -179,6 +211,8 @@ import { useNavigate } from "react-router-dom";
           </Box>
         )}
       </WidgetWrapper>
+    
+      </>
     );
   };
   

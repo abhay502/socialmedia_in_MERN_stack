@@ -76,3 +76,25 @@ export const addRemoveFriends = async(req,res)=>{
         
     }
 }
+
+export const getSearchedUsers = async (req,res)=>{
+    try {
+        const searchKey = await req.body.searchKey
+        // console.log(searchKey)
+        if(searchKey.length > 1){
+            const users = await User.find({
+                $or: [
+                  { firstName: { $regex: searchKey, $options: "i" } },
+                  { lastName: { $regex: searchKey, $options: "i" } },
+                 
+                ],
+              });
+            
+            //  console.log(users)
+            res.status(200).json({users})
+        }
+       
+    } catch (error) {
+         
+    }
+}

@@ -1,12 +1,22 @@
-import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { PersonAddOutlined, PersonRemoveOutlined, MoreVertRounded ,DeleteForeverRounded,EditRounded } from "@mui/icons-material";
+import { Box, IconButton, Typography, useTheme,MenuItem,Menu,Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
+import { useState } from "react";
+import { setPost } from "state";
 
-const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
+
+const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -22,7 +32,22 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const medium = palette.neutral.medium;
 
   const isFriend = friendsArray.find((friend) => friend._id === friendId);
-
+  const deletePost = async() => {
+    setAnchorEl(null);
+    console.log(postId)
+    const response = await fetch(`http://localhost:3001/posts/${postId}/deletePost`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }, 
+    }); 
+    console.log(response) 
+    const updatedPost = await response.json();
+    console.log(updatedPost)
+    dispatch(setPost({ post: updatedPost })); 
+    
+  };
   const patchFriend = async () => {
     const response = await fetch(
       `http://localhost:3001/users/${_id}/${friendId}`,
@@ -66,7 +91,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      <IconButton
+      {_id !== friendId ? <IconButton
         onClick={() => patchFriend()}
         sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
       >
@@ -75,7 +100,23 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         ) : (
           <PersonAddOutlined sx={{ color: primaryDark }} />
         )}
-      </IconButton>
+      </IconButton> : <>
+      <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+        <MoreVertRounded />
+      </Button>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={deletePost}
+      >
+        <MenuItem onClick={deletePost}><DeleteForeverRounded />Delete Post</MenuItem>
+        <MenuItem onClick={deletePost}><EditRounded />Edit Post</MenuItem>
+        {/* <MenuItem onClick={handleClose}>Option 3</MenuItem> */}
+      </Menu>
+      </>}
+      
     </FlexBetween>
   );
 };

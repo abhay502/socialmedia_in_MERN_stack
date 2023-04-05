@@ -106,3 +106,48 @@ export const commentPost = async(req,res)=>{
         
     }
 }
+
+export const deletePostComment = async (req,res)=>{
+    try {
+
+        const {id}=req.params
+        const {userId}=req.body
+        const post = await Post.findById(id);
+       
+          
+          const index = post.comments.findIndex(comment => comment.userId === userId);
+          
+          if (index !== -1) {
+            post.comments.splice(index, 1);
+            console.log(`Comment with userId ${userId} has been deleted.`);
+            await post.save();
+
+          } else {
+            console.log(`Comment with userId ${userId} not found.`);
+          }
+
+          const updatedPost = await Post.findByIdAndUpdate(id,
+            { likes:post.likes },{new:true})
+            
+        res.status(200).json(updatedPost) //200 represents successfull request
+       
+    } catch (error) {
+        
+    }
+}
+export const deletePost = async (req, res) => {
+    try {
+      const { id } = req.params;
+     
+      
+  
+      
+      await Post.findByIdAndDelete(id);
+      const post = await Post.find().sort({ _id: -1 }); //this will find all the posts to front end after creating a new posts.
+        res.status(200).json(post) //200 represents successfull request
+    
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };

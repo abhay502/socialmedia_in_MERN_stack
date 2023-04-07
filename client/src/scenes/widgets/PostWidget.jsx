@@ -83,7 +83,7 @@ import { useNavigate } from "react-router-dom";
           body: JSON.stringify({ userId: loggedInUserId,Username:fullName , comment: comment,userPicture:user.picturePath}), 
         });  
         const updatedPost = await response.json();
-        dispatch(setPost({ post: updatedPost }));
+        dispatch(setPost({ post: updatedPost })); 
         setComment(null)
       }
      

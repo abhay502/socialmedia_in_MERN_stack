@@ -88,14 +88,9 @@ export const commentPost = async(req,res)=>{
         const {userPicture}=req.body;
         
         const post = await Post.findById(id);
-        // const isCommented = post.comments.includes(userId)
-
-        // if(isCommented){
-        //     post.comments.pop(userId)
-        // }else{
+        
             post.comments.unshift({userId:userId,comment:comment,Username:Username,userPicture:userPicture, createdAt: new Date()});
-        // }
-
+    
         const updatedPost = await Post.findByIdAndUpdate(id,
             { comments:post.comments },{new:true})
             
@@ -150,4 +145,33 @@ export const deletePost = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
     }
-  };
+};
+export const getPostToEdit = async (req,res) =>{
+    try {
+        const {postId} = req.params;
+        const post = await Post.findById(postId);
+        res.status(200).json(post)
+
+    } catch (error) {
+        res.status(400).json(error.message)
+        
+    }
+}
+
+export const submitEditPost = async (req,res) =>{
+    try {
+        const {postId} = req.params;
+        const newDescription = req.body.description;
+
+        const updatedPost = await Post.findOneAndUpdate(
+            {_id: postId},
+            {description: newDescription},
+            {new: true}
+        );
+
+        res.json(updatedPost);
+
+    } catch (error) {
+        res.status(500).json({ message: "Error updating post description." });
+    }
+}

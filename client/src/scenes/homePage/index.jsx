@@ -7,19 +7,19 @@ import FriendListWidget from "scenes/widgets/FriendListWidget";
 import MyPostWidget from "scenes/widgets/myPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget"; 
-import Navbar from "../navbar/Navbar"
+import Navbar from "../navbar/Navbar" 
 
  
 
 const HomePage = ()=>{ 
-    const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+    const isNonMobileScreens = useMediaQuery("(min-width:1000px)"); 
     const { _id,picturePath }=useSelector((state)=> state.user);
-   
+          
     const friends = useSelector((state)=> state.user.friends);
   
 
     return(
-       
+          
             <Box  > 
 
                 <Navbar   />

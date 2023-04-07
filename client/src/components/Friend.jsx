@@ -7,9 +7,42 @@ import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import { useState } from "react";
 import { setPost } from "state";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
+import Modal from '@mui/material/Modal';
+import EditPostWidget from "scenes/widgets/EditPostWidget";
 
+
+ 
+const style = {
+  position: 'absolute',
+  top: '40%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
+  const [open, setOpen] = useState(false);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+ 
+ 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {  
+    setOpen(false);
+    setAnchorEl(null);
+  }
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -32,8 +65,11 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
   const medium = palette.neutral.medium;
 
   const isFriend = friendsArray.find((friend) => friend._id === friendId);
-  const deletePost = async() => {
+
+
+  const deletePost = async() => { //code to delete a post
     setAnchorEl(null);
+    handleClose()
     console.log(postId)
     const response = await fetch(`http://localhost:3001/posts/${postId}/deletePost`, {
       method: "PATCH",
@@ -109,14 +145,40 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={deletePost}
+        onClose={handleClose}
       >
-        <MenuItem onClick={deletePost}><DeleteForeverRounded />Delete Post</MenuItem>
-        <MenuItem onClick={deletePost}><EditRounded />Edit Post</MenuItem>
+        <MenuItem onClick={handleClickOpen}><DeleteForeverRounded />Delete Post</MenuItem>
+        <MenuItem onClick={handleModalOpen}><EditRounded />Edit Post</MenuItem>
         {/* <MenuItem onClick={handleClose}>Option 3</MenuItem> */}
       </Menu>
       </>}
-      
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose} 
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+         <EditPostWidget postId={postId} />
+        </Box>
+      </Modal>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are you sure want to delete this post?"}
+        </DialogTitle>
+       
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={deletePost} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </FlexBetween>
   );
 };

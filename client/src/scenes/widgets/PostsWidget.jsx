@@ -16,6 +16,9 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
+    if(data.length === 0){
+      setNoPost(true)
+    }
     dispatch(setPosts({ posts: data }));
   };
 
@@ -49,12 +52,11 @@ const PostsWidget = ({ userId, isProfile = false }) => {
         ({
           _id,
           userId,
-          firstName,
-          lastName,
+         
           description,
           location,
           picturePath,
-          userPicturePath,
+          
           likes,
           comments,
           createdAt
@@ -63,11 +65,11 @@ const PostsWidget = ({ userId, isProfile = false }) => {
             key={_id}
             postId={_id}
             postUserId={userId}
-            name={`${firstName} ${lastName}`}
+           
             description={description} 
             location={location}
             picturePath={picturePath} 
-            userPicturePath={userPicturePath}
+           
             likes={likes}
             comments={comments}
             date={ new Date(createdAt).toLocaleString()}

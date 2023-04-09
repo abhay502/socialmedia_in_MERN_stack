@@ -44,7 +44,7 @@ export const colorTokens = {
               },
               neutral: {
                 dark: colorTokens.grey[100],
-                main: colorTokens.grey[200],
+                main: colorTokens.grey[0],
                 mediumMain: colorTokens.grey[300],
                 medium: colorTokens.grey[400],
                 light: colorTokens.grey[700],

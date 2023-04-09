@@ -46,17 +46,17 @@ const FriendListWidget =({ userId }) => {
             </Typography>
 
             <Box display="flex" flexDirection="column" gap="1.5rem">
-                {
-                    
-                    friends.length > 0 && friends?.map((friend)=>(
-                       <Friend  
-                       key={friend._id} 
-                       friendId={friend._id}
-                       name={`${friend.firstName}  ${friend.lastName}`}
-                       subtitle={friend.location}
-                       userPicturePath={friend.picturePath}
-                       />
-                    ))}
+            {
+                friends.length > 0 && friends?.map((friend) => (
+                    <Friend
+                    key={friend._id} // Add a unique key prop based on the friend's _id
+                    friendId={friend._id}
+                    name={`${friend.firstName} ${friend.lastName}`}
+                    subtitle={friend.location}
+                    userPicturePath={friend.picturePath}
+                    />
+                ))
+            } 
             </Box>
         </WidgetWrapper>
     )

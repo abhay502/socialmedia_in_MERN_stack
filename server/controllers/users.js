@@ -98,3 +98,36 @@ export const getSearchedUsers = async (req,res)=>{
          
     }
 }
+export const editProfile = async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const updatedFirstName = req.body.firstName;
+      const updatedLastName = req.body.lastName;
+      const updatedEmail = req.body.email;
+      const updatedNumber = req.body.number;
+      const updatedPicturePath = req.body.profilePic;
+      console.log(updatedPicturePath)
+  
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Update user data
+      user.firstName = updatedFirstName;
+      user.lastName = updatedLastName;
+      user.email = updatedEmail;
+      user.number = updatedNumber;
+      user.picturePath = updatedPicturePath;
+  
+      // Save updated user data to the database
+      await user.save();
+  
+      return res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  };
+  

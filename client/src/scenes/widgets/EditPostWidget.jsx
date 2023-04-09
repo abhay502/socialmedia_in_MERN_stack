@@ -5,24 +5,25 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const EditPostWidget = ({ postId }) => {
+const EditPostWidget = ({ postId }) => { 
  
     const navigate=useNavigate()
     
     const token = useSelector((state) => state.token);
     const { palette } = useTheme();
-
+ 
     const [post,setPost] = useState(null);
     const [updatePost,setUpdatePost] = useState('');
+    
     const getPostToEdit = async ()=>{
         const response = await fetch(`http://localhost:3001/posts/${postId}/getPostToEdit`,{
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
         })
         const data = await response.json();
-        //  console.log(data)
+        
           setPost(data)
           setUpdatePost(data)
              
@@ -65,11 +66,11 @@ const EditPostWidget = ({ postId }) => {
                     <Typography>createdAt : {date}</Typography>
 
                 <Typography variant="h5">Image:</Typography>
-                      <Typography color={"red"}>Image can't be edit</Typography>
+                      <Typography color={"red"}>Image can't be edit </Typography>
                            
                 {post?.picturePath && (
                             <img
-                                width="50%"
+                                width="50%" 
                                 height="auto"
                                 alt="post"
                                 style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
@@ -99,4 +100,4 @@ const EditPostWidget = ({ postId }) => {
     )
 }
  
-export default EditPostWidget;
+export default EditPostWidget;  

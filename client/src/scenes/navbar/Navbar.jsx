@@ -1,11 +1,10 @@
 
 import { useEffect, useState } from "react"
-import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, ListItem,
-    ListItemText,
-    ListItemAvatar,
-    Avatar, } from "@mui/material"
+import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, List, ListItem,
+  
+   } from "@mui/material" 
 
-import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close, List,
+import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close,
     } from "@mui/icons-material"
 
 import { useDispatch, useSelector } from "react-redux"
@@ -13,6 +12,7 @@ import { setMode, setLogout } from "state"
 import { useNavigate } from "react-router-dom"; 
 import FlexBetween from "components/FlexBetween";
 import SearchResults from "./SearchResult"
+import UserImage from "components/UserImage"
 
 
 
@@ -24,6 +24,26 @@ const Navbar = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
+
+  
+    const [loggedIn, setLoggedInUser] = useState(null)
+    const getUser = async () => {
+
+        const response = await fetch(`http://localhost:3001/users/${user?._id}`,
+            {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` }
+            })
+    
+        const data = await response.json();
+        setLoggedInUser(data);
+    }
+    
+    useEffect(() => {
+        getUser()
+    }, []);
+    
+
 
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)") 
 
@@ -41,33 +61,50 @@ const Navbar = () => {
     const [search, setSearch] = useState(""); 
     const [searchedResults,setSearchedResults] = useState("")
     const handleChange = (e) =>{
+       
+      
         setSearch(e.target.value)
+        searchUsers();
     }
     
     
-    const searchUsers = async ()=>{
-
-        const response = await fetch(`http://localhost:3001/users/searchUsers`,{
-            method:"POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              }, 
-              body: JSON.stringify({ searchKey:search }), 
-        })
-
-       
+    const searchUsers = async () => {
+        // if (search.trim() === '') {
+        //   setSearchedResults('');
+        //   return;
+        // }
+      
+        const response = await fetch(`http://localhost:3001/users/searchUsers`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ searchKey: search }),
+        });
+      
         const Results = await response.json();
         setSearchedResults(Results);
-    }
+      };
+      
+    //   useEffect(() => {
+    //     searchUsers();
+    //   }, [search]);
+      
+      useEffect(() => {
+        // reset searched results when search query is empty
+        if (search.trim() === '') {
+          setSearchedResults('');
+        }
+      }, [search]);
+      
 
-    useEffect(()=>{
-      searchUsers()
-    },[search])
+   
 
  const resultsArray = Object.values(searchedResults);
-//  console.log(resultsArray)
 
+ const results = resultsArray;
+    // console.log(results)
 
     return (
         <>
@@ -93,6 +130,7 @@ const Navbar = () => {
                             <Search />
                             
                         </IconButton>
+
                       
                     </FlexBetween>
                     
@@ -112,8 +150,8 @@ const Navbar = () => {
                         <Message sx={{ fontSize: "25px" }} />
                         <Notifications sx={{ fontSize: "25px" }} />
                         <Help sx={{ fontSize: "25px" }} />
-                        <FormControl variant="standard" value={fullName}></FormControl>
-                        <Select value={fullName} sx={{
+                        <FormControl variant="standard" value={loggedIn?.firstName+" "+loggedIn?.lastName}></FormControl>
+                        <Select value={loggedIn?.firstName+" "+loggedIn?.lastName} sx={{
                             backgroundColor: neutralLight,
                             width: "150px",
                             borderRadius: "0.25rem",
@@ -126,12 +164,14 @@ const Navbar = () => {
                                 backgroundColor: neutralLight
                             }
                         }}
-                            input={<InputBase />}
+                            input={<InputBase />} 
 
                         >
-                            <MenuItem value={fullName}>
-                                <Typography>{fullName}</Typography>
-                            </MenuItem>
+                           {loggedIn && (
+                                <MenuItem value={loggedIn.firstName + " " + loggedIn.lastName}>
+                                <Typography>{loggedIn.firstName + " " + loggedIn.lastName}</Typography>
+                                </MenuItem>
+                            )}
                             <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
                         </Select>
                     </FlexBetween>
@@ -190,13 +230,44 @@ const Navbar = () => {
                     </Box>
                 )}
             </FlexBetween>
-            
+            {results.length === 0 && search !== ''  ? <Typography color={"white"}>No Search Results</Typography>:<Typography>sfsdf</Typography> }
           
-        </FlexBetween>
-        <Box  marginBottom="1rem" padding='1rem 6% '  position="" top="0" left="0" width="35%">
-        <SearchResults results={resultsArray}/> 
+        </FlexBetween> 
+        <Box zIndex={2}   padding='1rem 6% '  position="absolute"  left="0" width="31.9%"  >
+         <>
+        
+    {searchedResults ?  <Box borderRadius="0.5rem"  backgroundColor="black" sx={{ marginTop: '5rem' }}>
+      <Typography variant="h6" sx={{ marginBottom: '0.5rem' }}>
+      
+      </Typography>
+      <List>
+        {results[0]?.map((result) => (
             
-        </Box>
+          <ListItem
+          sx={{backgroundColor:"lightslategrey"}}
+            button
+            key={result?._id}
+            onClick={() => {
+                navigate(`/profile/${result?._id}`)
+            }}
+          >
+             <UserImage image={result?.picturePath} />
+             <Box display={"grid"}>
+             <Typography ml={"1rem"} sx={{fontWeight:"bold"}}> {result?.firstName+" "+result?.lastName}</Typography> 
+             <Typography ml={"1rem"} sx={{fontSize:12}}> {result?.location}</Typography> 
+             </Box>
+          
+
+           
+          </ListItem> 
+        ))}
+      </List>
+    </Box> : null }
+  
+    </>
+            
+        </Box> 
+       
      
 
         </>

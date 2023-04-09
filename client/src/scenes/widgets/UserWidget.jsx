@@ -5,7 +5,7 @@ import{
     WorkOutlineOutlined,
     MessageOutlined
 } from '@mui/icons-material';
-import { Box, Typography, Divider, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, Divider, useTheme, useMediaQuery, Button } from '@mui/material';
 import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -21,7 +21,7 @@ const UserWidget = ({userId, picturePath})=>{
     const LoginUser = useSelector((state) => state.user);
     const [user, setUser]= useState(null);
     const {palette} = useTheme();
-    const navigate=useNavigate()
+    const navigate=useNavigate() 
     const token =useSelector((state)=>state.token);
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium
@@ -32,15 +32,15 @@ const UserWidget = ({userId, picturePath})=>{
         const response = await fetch(`http://localhost:3001/users/${userId}`,
         {
             method:"GET",
-            headers:{Authorization:`Bearer ${token}`}
+            headers:{Authorization:`Bearer ${token}`} 
         });
 
-        const data = await response.json()
-        setUser(data)
+        const data = await response.json() 
+        setUser(data) 
     };
 
-    useEffect(()=>{
-        getUser() 
+    useEffect(()=>{ 
+        getUser()  
     },[]) 
  
     if(!user)return null;
@@ -48,7 +48,7 @@ const UserWidget = ({userId, picturePath})=>{
     const { firstName,lastName,location,viewedProfile, impressions, friends } = user
 
     return(
-        <WidgetWrapper position={isNonMobileScreens ? "fixed" : undefined}   zIndex="999"  >
+        <WidgetWrapper  position={isNonMobileScreens ? "fixed" : undefined}   >
             <FlexBetween 
              gap="0.5rem"
              pb="1.1rem"
@@ -56,7 +56,7 @@ const UserWidget = ({userId, picturePath})=>{
             >    
              {/* First ROW */}
                 <FlexBetween gap="1rem">
-                    <UserImage image={picturePath} />
+                    <UserImage image={user?.picturePath} />
                     <Box>
                         <Typography 
                          variant='h4'
@@ -73,12 +73,17 @@ const UserWidget = ({userId, picturePath})=>{
                         <Typography color={medium}> {friends.length} friends</Typography>
                     </Box>
                 </FlexBetween>
-                {LoginUser._id !== userId ? <MessageOutlined/> :  <ManageAccountsOutlined/>}
 
                
                 </FlexBetween>
-            
-                <Divider/>  {/* dividing FIRST ROW AND SECOND ROW */}
+                
+                {LoginUser._id !== userId ?<Button><MessageOutlined/> <Typography>  Send Message</Typography></Button>   : <Button onClick={() => navigate(`/editProfile/${userId}`)}>
+                    <ManageAccountsOutlined />
+                    <Typography>Edit Profile</Typography>
+                    </Button> 
+                }
+                      
+                <Divider/>  {/* dividing FIRST ROW AND SECOND ROW */} 
                 {/* SECOND ROW */}
 
                 <Box p="1rem 0">

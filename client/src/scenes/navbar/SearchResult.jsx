@@ -15,7 +15,7 @@ const SearchResults = ({ results }) => {
         {results[0]?.map((result) => (
             
           <ListItem
-          
+          sx={{backgroundColor:"lightslategrey"}}
             button
             key={result?._id}
             onClick={() => {

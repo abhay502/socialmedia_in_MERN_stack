@@ -40,7 +40,8 @@ const ProfilePage = () => {
     return (
         <Box>
             <Navbar  />
-            <Box marginTop="5rem">
+            <Box marginTop="5rem" 
+                  zIndex="1">
  
                 <Box width="100%"
                     padding="2rem 6%"
@@ -48,7 +49,7 @@ const ProfilePage = () => {
                     gap="2rem"
                     justifyContent="center"
                 >
-                    <Box flexBasis={isNonMobileScreens ? "26%" : undefined}
+                    <Box position="relative" flexBasis={isNonMobileScreens ? "26%" : undefined}
                       ml={isNonMobileScreens ?  "-23rem" : undefined } >
                         <UserWidget userId={userId} picturePath={user.picturePath} /> 
                         <Box m="20rem 0" />

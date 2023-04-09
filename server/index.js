@@ -41,21 +41,19 @@ app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 app.use("/assets",express.static(path.join(__dirname,'public/assets')))
 
 //FILE STORAGE
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/assets')
-  },
-  filename: function (req, file, cb) {
-    const fileExtension = file.mimetype.split('/')[1];
-    cb(null, `${file.fieldname}-${Date.now()}.${fileExtension}`);
-  }
+const storage=multer.diskStorage({  
+    destination:(req,file,cb)=>{
+        cb(null,"public/assets")
+    },
+    filename:(req,file,cb)=>{
+        cb(null, file.originalname)
+    }, 
 });
+const upload = multer({storage});
 
-const upload = multer({ storage });
-
-app.post("/auth/register", upload.single("file"), register);
-app.post("/posts", verifyToken, upload.single("file"), createPost);
-
+//ROUTES WITH FILES
+app.post("/auth/register", upload.single("picture"), register);
+app.post("/posts", verifyToken,  upload.single("picture"), createPost)
 
 //ROUTES
 app.use("/auth", authRoutes);

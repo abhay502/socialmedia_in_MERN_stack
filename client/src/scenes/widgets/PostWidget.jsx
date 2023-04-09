@@ -4,10 +4,13 @@ import {
     FavoriteOutlined,
     ShareOutlined,
     SendOutlined,
-    DeleteForeverOutlined
+    DeleteForeverOutlined,
+    
   } from "@mui/icons-material";
+  import FavoriteIcon from '@mui/icons-material/Favorite';
   import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme } from "@mui/material";
 import { color } from "@mui/system";
+import CommentList from "components/CommentList";
   import FlexBetween from "components/FlexBetween";
   import Friend from "components/Friend";
 import UserImage from "components/UserImage";
@@ -18,13 +21,13 @@ import { useNavigate } from "react-router-dom";
   import { setPost } from "state";
   
   const PostWidget = ({
-    postId,
-    postUserId,
-    name,
+    postId, 
+    postUserId, 
+   
     description,
-    location,
+    location, 
     picturePath,
-    userPicturePath,
+    
     likes,
     comments,
     date
@@ -90,8 +93,7 @@ import { useNavigate } from "react-router-dom";
     };
 
     const deleteComment = async () =>{
-      console.log(postId)
-      console.log(user._id)
+    
       const response = await fetch(`http://localhost:3001/posts/${postId}/deleteComment`, {
         method: "PATCH",
         headers: {
@@ -104,47 +106,75 @@ import { useNavigate } from "react-router-dom";
       const updatedPost = await response.json();
       dispatch(setPost({ post: updatedPost })); 
     }
+    const [showLove, setShowLove] = useState(false);
+
+    const handleDoubleClick = () => {
+      patchLike();
+      setShowLove(true);
+      setTimeout(() => {
+        setShowLove(false);
+      }, 1000);
+    }
 
     return ( 
       <>
       
         <WidgetWrapper m="2rem 0">
 
-        <Friend
+         <Friend
           friendId={postUserId}
-          name={name}
+          name={postUserId}
           subtitle={location} 
-          userPicturePath={userPicturePath}
+          userPicturePath={postUserId}
           postId={postId}
-        />
-        <Typography color={main} sx={{ mt: "1rem " }}>
-          {description}
-        </Typography>
+        /> 
+       
 
-        <Typography color={main} sx={{ ml: "23rem",mt:"-1.1rem",fontSize:12}}>  
-          {date}
+        <Typography color={main} sx={{ ml: "23rem",fontSize:12}}>  
+          Posted On :{date}
         </Typography>
 
         {picturePath && (
+        <div style={{ position: "relative" }}>
+          {showLove && (
+            <div style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              color: "red",
+              fontSize: "2rem",
+              zIndex: 1,
+            }}>
+              <FavoriteIcon sx={{  fontSize: '6rem' }} />
+            </div>
+          )}
           <img
             width="100%"
             height="auto"
             alt="post"
-            style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
+            style={{ borderRadius: "0.75rem", marginTop: "0.75rem", cursor: "pointer" }}
             src={`http://localhost:3001/assets/${picturePath}`}
+            onDoubleClick={handleDoubleClick}
           />
-        )}
+        </div>
+      )}
+        
+         <Typography  fontWeight="500" color={main} sx={{ mt: "1rem ", }}>
+          {description}
+        </Typography>
         <FlexBetween mt="0.25rem">
+          
           <FlexBetween gap="1rem">
             <FlexBetween gap="0.3rem">
-              <IconButton onClick={patchLike}>
+              <IconButton onClick={patchLike}>  
                 {isLiked ? (
                   <FavoriteOutlined sx={{ color: primary }} />
                 ) : (
                   <FavoriteBorderOutlined />
                 )}
-              </IconButton>
-              <Typography>{likeCount}</Typography>
+              </IconButton> 
+              <Typography sx={{fontWeight:'500'}}>{likeCount} likes</Typography>
             </FlexBetween>
   
             <FlexBetween gap="0.3rem">
@@ -171,28 +201,18 @@ import { useNavigate } from "react-router-dom";
        onClick={patchComment}>
         <SendOutlined />
       </Button>
-                      {comments.map((comment, i) => (
-                  <Box key={`${name}-${i}`}>
-                    <Divider />
+                      {comments.map((comment, i) => (  
+                  <Box key={`${comment.userId}-${i}`}>
+                   
                     <Typography sx={{  color: main, m: "0.5rem 0", pl: "1rem" }}>
                          <Box sx={{display:"flex"}}>
-                        <img 
-                          src={`http://localhost:3001/assets/${comment.userPicture}`} 
-                          style={{
-                            width: "26px",
-                            height: "25px",
-                            borderRadius: "50%",
-                            marginRight:"5px",
-                            objectFit: "cover"
-                          }} 
-                          alt="profilepic" />
-                         <Typography
-                           onClick={() => {
-                            navigate(`/profile/${comment.userId}`);
-                            navigate(0);  
-                          }}
-                         sx={ {cursor:"pointer", fontSize:15, fontWeight:"semi-bold"}}> {comment.Username} : </Typography>
-                        <Typography sx={{ml:"0.5rem", mt:"0.1rem"}}>{comment.comment}</Typography>
+                          <Box height='2rem'>
+                          {comment.userId &&
+                          <CommentList userId={comment.userId} /> }
+                          </Box>
+                          
+                        
+                        <Typography  width={"13rem"} sx={{ml:"0.5rem", mt:"0.4rem", fontSize:"0.9rem"}}>{comment.comment}</Typography>
                         
                            
                          </Box>

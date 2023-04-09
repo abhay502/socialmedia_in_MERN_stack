@@ -6,15 +6,14 @@ export const createPost = async (req,res)=>{
         const { userId, description, picturePath } = req.body; 
         const user = await User.findById(userId)
         const currentDate = new Date() 
-        //  .toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+       
 
         const newPost = new Post({
             userId,
-            firstName:user.firstName,
-            lastName:user.lastName,
+           
             location:user.location,
             description,
-            userPicturePath:user.picturePath,
+            
             picturePath,
             likes:{},
             comments:[],

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setPost } from "state";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,7 +14,7 @@ import Modal from '@mui/material/Modal';
 import EditPostWidget from "scenes/widgets/EditPostWidget";
 
 
- 
+  
 const style = {
   position: 'absolute',
   top: '40%',
@@ -28,6 +28,21 @@ const style = {
 };
 
 const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
+  const getUser = async () => {
+
+    const response = await fetch(`http://localhost:3001/users/${friendId}`,
+        {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+    const data = await response.json();
+    setUser(data);
+}
+
+useEffect(() => {
+    getUser()
+}, []);
   const [open, setOpen] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -52,6 +67,9 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [user, setUser] = useState(null)
+   
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
 
@@ -66,7 +84,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
 
   const isFriend = friendsArray.find((friend) => friend._id === friendId);
 
-
+  
   const deletePost = async() => { //code to delete a post
     setAnchorEl(null);
     handleClose()
@@ -78,7 +96,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
         "Content-Type": "application/json", 
       }, 
     }); 
-    console.log(response) 
+    // console.log(response) 
     const updatedPost = await response.json();
     console.log(updatedPost)
     dispatch(setPost({ post: updatedPost })); 
@@ -98,11 +116,11 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
   };
-
+  if(!user) return null
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
-        <UserImage image={userPicturePath} size="55px" />
+        <UserImage image={user?.picturePath} size="55px" />
         <Box
           onClick={() => {
             navigate(`/profile/${friendId}`);
@@ -120,8 +138,8 @@ const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
               },
             }}
           >
-            {name}
-          </Typography>
+            {user?.firstName+ " "+user?.lastName}
+          </Typography> 
           <Typography color={medium} fontSize="0.75rem">
             {subtitle}
           </Typography>

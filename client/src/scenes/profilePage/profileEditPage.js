@@ -1,4 +1,5 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { json, useNavigate, useParams } from "react-router-dom";
@@ -13,11 +14,11 @@ const ProfileEditPage = () => {
     const [profilePic, setProfilePic] = useState(null);
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [number, setNumber] = useState(null);
+    const [email, setEmail] = useState(null); 
+    const [number, setNumber] = useState(null); 
 
     const getUser = async () => {
-        const response = await fetch(`http://localhost:3001/users/${userId}`, {
+        const response = await fetch(`${USERS_URL}/${userId}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${token}`, }
         });
@@ -30,14 +31,14 @@ const ProfileEditPage = () => {
     }
 
     useEffect(() => {
-        getUser()
-    }, []);
+        getUser() 
+    }, []); 
     
     const handleSave = async () => {
         console.log(profilePic)
-            const response = await fetch(`http://localhost:3001/users/${userId}/edit`, {
+            const response = await fetch(`${USERS_URL}/${userId}/edit`, {
                 method: "POST",
-                headers: { Authorization: `Bearer ${token}`,
+                headers: { Authorization: `Bearer ${token}`, 
                 "Content-Type": "application/json" },
                 body:JSON.stringify({firstName:firstName,lastName:lastName,email:email,number:number,profilePic:profilePic?.name}) 
             }).then(()=>{

@@ -4,6 +4,7 @@ import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import { useTheme } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import { USERS_URL } from "Constants";
 
 const { Typography } = require("@mui/material")
 
@@ -12,18 +13,18 @@ const CommentList = ({userId})=>{
     const { palette } = useTheme();
   const navigate = useNavigate();
   const main = palette.neutral.main;
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null) 
   const token = useSelector((state) => state.token);
 
     const getUser = async () => {
 
-        const response = await fetch(`http://localhost:3001/users/${userId}`,
+        const response = await fetch(`${USERS_URL}/${userId}`,
             {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` }
             })
     
-        const data = await response.json();
+        const data = await response.json(); 
         setUser(data);
     }
     

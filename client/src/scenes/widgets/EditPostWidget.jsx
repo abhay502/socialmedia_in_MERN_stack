@@ -1,7 +1,8 @@
 
 import { useTheme } from "@emotion/react";
 import { Box, Button, InputBase, Typography } from "@mui/material";
-import UserImage from "components/UserImage";
+import { IMG_URL, POSTS_URL } from "Constants";
+
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,7 +19,7 @@ const EditPostWidget = ({ postId }) => {
     const [updatePost,setUpdatePost] = useState('');
     
     const getPostToEdit = async ()=>{
-        const response = await fetch(`http://localhost:3001/posts/${postId}/getPostToEdit`,{
+        const response = await fetch(`${POSTS_URL}/${postId}/getPostToEdit`,{
             method: "GET",
             headers: { Authorization: `Bearer ${token}` },
         })
@@ -38,7 +39,7 @@ const EditPostWidget = ({ postId }) => {
 
     const  submitEditPost =async ()=>{
        navigate('/home')
-        const response = await fetch(`http://localhost:3001/posts/${postId}/submitEditPost`,{
+        const response = await fetch(`${POSTS_URL}/${postId}/submitEditPost`,{
             method:"PATCH",
             headers: { Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -60,12 +61,10 @@ const EditPostWidget = ({ postId }) => {
              
            <Typography sx={{ml:"12rem"}}>EDIT POST </Typography>
            <Box display="grid" gap="0.5rem">
-           
-                <UserImage image={post?.userPicturePath} />
-                    <Typography>{post?.firstName+""+post?.lastName}</Typography>
-                    <Typography>createdAt : {date}</Typography>
+            
+                
 
-                <Typography variant="h5">Image:</Typography>
+                <Typography variant="h5">Image:</Typography> 
                       <Typography color={"red"}>Image can't be edit </Typography>
                            
                 {post?.picturePath && (
@@ -74,7 +73,7 @@ const EditPostWidget = ({ postId }) => {
                                 height="auto"
                                 alt="post"
                                 style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-                                src={`http://localhost:3001/assets/${post?.picturePath}`} 
+                                src={IMG_URL+post?.picturePath} 
                             />
                         )}  
                     <Typography variant="h5">Description:</Typography>

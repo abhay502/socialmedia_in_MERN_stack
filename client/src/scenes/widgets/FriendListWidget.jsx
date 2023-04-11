@@ -1,4 +1,5 @@
 import { Typography,Box,useTheme, useMediaQuery } from "@mui/material";
+import { USERS_URL } from "Constants";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect } from "react";
@@ -19,13 +20,13 @@ const FriendListWidget =({ userId }) => {
     
     const getFriends = async ()=>{ 
        
-        const response = await fetch(`http://localhost:3001/users/${userId}/friends`,
+        const response = await fetch(`${USERS_URL}/${userId}/friends`,
         {
             method:"GET",
             headers:{Authorization:`Bearer ${token}`}
         }); 
        
-        const data = await response.json();
+        const data = await response.json(); 
         
         dispatch(setFriends({ friends:data})) 
     };

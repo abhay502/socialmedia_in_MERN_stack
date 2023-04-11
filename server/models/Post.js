@@ -10,14 +10,14 @@ const postSchema = mongoose.Schema(
         location:String,
         description:String,
         picturePath:String,
-        // videoPath:String, 
+        videoPath:String, 
        
         likes:{
             type:Map,
             of:Boolean, 
         },
         comments:{
-            type:Array,
+            type:Array, 
             default:[]
         } 
     },

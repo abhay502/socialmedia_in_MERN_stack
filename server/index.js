@@ -10,7 +10,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import User from './models/User.js';
 import Post from './models/Post.js';
-import { users, posts } from "./data/index.js"
+import { users, posts } from "./data/index.js" 
 
 //local imports 
 import authRoutes from './routes/auth.js'
@@ -47,13 +47,20 @@ const storage=multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         cb(null, file.originalname)
-    }, 
+    },  
 });
-const upload = multer({storage});
+const upload = multer({
+    storage:storage,
+    limits:{ 
+        fileSize: 1024 * 1024 * 50 //50mb  
+    }
+});
 
 //ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
-app.post("/posts", verifyToken,  upload.single("picture"), createPost)
+app.post("/posts", verifyToken,  upload.single("picture"),createPost)
+app.post("/posts/video", verifyToken,  upload.single("video"),createPost)
+
 
 //ROUTES
 app.use("/auth", authRoutes);

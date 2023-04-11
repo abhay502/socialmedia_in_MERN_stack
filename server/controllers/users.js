@@ -122,8 +122,8 @@ export const editProfile = async (req, res) => {
       user.picturePath = updatedPicturePath;
   
       // Save updated user data to the database
-      await user.save();
-  
+      await user.save(user.picturePath );
+       console.log()
       return res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
       console.error(error);

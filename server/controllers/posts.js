@@ -3,7 +3,7 @@ import User from '../models/User.js'
 
 export const createPost = async (req,res)=>{
     try {
-        const { userId, description, picturePath } = req.body; 
+        const { userId, description, picturePath, videoPath } = req.body; 
         const user = await User.findById(userId)
         const currentDate = new Date() 
        
@@ -11,10 +11,11 @@ export const createPost = async (req,res)=>{
         const newPost = new Post({
             userId,
            
-            location:user.location,
-            description,
+            location:user.location, 
+            description, 
             
-            picturePath,
+            picturePath: picturePath || "",
+            videoPath: videoPath || "",
             likes:{},
             comments:[],
             createdAt: currentDate
@@ -27,7 +28,7 @@ export const createPost = async (req,res)=>{
         res.status(409).json({message:error.message})
     }
 }
-
+ 
 export const getFeedPosts = async (req,res) =>{
     try {
         

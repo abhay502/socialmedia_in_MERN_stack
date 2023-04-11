@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import SearchResults from "./SearchResult"
 import UserImage from "components/UserImage"
+import { USERS_URL } from "Constants"
 
 
 
@@ -29,7 +30,7 @@ const Navbar = () => {
     const [loggedIn, setLoggedInUser] = useState(null)
     const getUser = async () => {
 
-        const response = await fetch(`http://localhost:3001/users/${user?._id}`,
+        const response = await fetch(`${USERS_URL}/${user?._id}`,
             {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` }
@@ -60,12 +61,12 @@ const Navbar = () => {
 
     const [search, setSearch] = useState(""); 
     const [searchedResults,setSearchedResults] = useState("")
-    const handleChange = (e) =>{
+    // const handleChange = (e) =>{
        
-      
-        setSearch(e.target.value)
-        searchUsers();
-    }
+       
+    //     setSearch(e.target.value)
+    //     searchUsers();
+    // }
     
     
     const searchUsers = async () => {
@@ -74,7 +75,7 @@ const Navbar = () => {
         //   return;
         // }
       
-        const response = await fetch(`http://localhost:3001/users/searchUsers`, {
+        const response = await fetch(`${USERS_URL}/searchUsers`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,7 +107,7 @@ const Navbar = () => {
  const results = resultsArray;
     // console.log(results)
 
-    return (
+    return (  
         <>
         <FlexBetween marginBottom="1rem" padding='1rem 6% ' backgroundColor={alt} position="fixed" top="0" left="0" width="100%" zIndex="999"  >
             <FlexBetween gap="1.75rem">
@@ -125,7 +126,12 @@ const Navbar = () => {
                 {isNonMobileScreens && (
                     <>
                     <FlexBetween backgroundColor={neutralLight} borderRadius="9px" gap="3rem" padding="0.1rem 1.5rem">
-                        <InputBase placeholder="Search.." onChange={handleChange} value={search}  />
+                        <InputBase placeholder="Search.." onChange={(e) =>{
+       
+      
+       setSearch(e?.target?.value)
+        
+   }} onKeyUp={()=>searchUsers()} value={search}  />
                            <IconButton>
                             <Search />
                             

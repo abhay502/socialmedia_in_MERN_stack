@@ -12,6 +12,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Modal from '@mui/material/Modal';
 import EditPostWidget from "scenes/widgets/EditPostWidget";
+import { POSTS_URL, USERS_URL } from "Constants";
 
 
   
@@ -30,7 +31,7 @@ const style = {
 const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
   const getUser = async () => {
 
-    const response = await fetch(`http://localhost:3001/users/${friendId}`,
+    const response = await fetch(`${USERS_URL}/${friendId}`,
         {
             method: "GET",
             headers: { Authorization: `Bearer ${token}` }
@@ -89,11 +90,11 @@ useEffect(() => {
     setAnchorEl(null);
     handleClose()
     console.log(postId)
-    const response = await fetch(`http://localhost:3001/posts/${postId}/deletePost`, {
+    const response = await fetch(`${POSTS_URL}/${postId}/deletePost`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",  
       }, 
     }); 
     // console.log(response) 
@@ -104,7 +105,7 @@ useEffect(() => {
   };
   const patchFriend = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
+      `${USERS_URL}/${_id}/${friendId}`,
       {
         method: "PATCH",
         headers: {

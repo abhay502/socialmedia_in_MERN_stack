@@ -1,11 +1,12 @@
 import { Box, useMediaQuery } from "@mui/material";
+import { USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbar/Navbar";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import MyPostWidget from "scenes/widgets/myPostWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
+import PostsWidget from "scenes/widgets/PostsWidget"; 
 import UserWidget from "scenes/widgets/UserWidget";
 
 
@@ -20,7 +21,7 @@ const ProfilePage = () => {
 
     const getUser = async () => {
 
-        const response = await fetch(`http://localhost:3001/users/${userId}`,
+        const response = await fetch(`${USERS_URL}/${userId}`,
             {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` }

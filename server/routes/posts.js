@@ -8,7 +8,7 @@ import { getFeedPosts,getUserPosts, likePost ,commentPost,
 import { verifyToken } from '../middleware/auth.js'
 
 const router=express.Router()
-
+ 
 //READ
 
 router.get('/', verifyToken, getFeedPosts)

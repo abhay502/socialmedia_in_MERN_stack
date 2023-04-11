@@ -11,6 +11,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
+import { POSTS_URL } from "Constants";
 
 
 const MyPostWidget = ({ picturePath }) => {
@@ -39,18 +40,45 @@ const MyPostWidget = ({ picturePath }) => {
             formData.append("userId", _id);
             formData.append("description", post);
             if (image) {
-                formData.append("picture", image);
+                formData.append("picture", image); 
                 formData.append("picturePath", image.name);
+                const response = await fetch(POSTS_URL, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData
+              });
+      
+              const posts = await response.json();  
+              console.log(posts)
+              dispatch(setPosts({ posts }));
+              setImage(null)
+              setPost("")
             }
-            
-    
-            const response = await fetch(`http://localhost:3001/posts`, {
+            if(video){
+              formData.append("video",video);
+              formData.append("videoPath",video.name);
+              const response = await fetch(`${POSTS_URL}/video`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData
             });
     
-            const posts = await response.json(); 
+            const posts = await response.json();  
+            console.log(posts) 
+            dispatch(setPosts({ posts }));
+            setVideo(null)
+            setPost("")
+            }
+           
+            
+    
+            const response = await fetch(POSTS_URL, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData
+            });
+    
+            const posts = await response.json();  
             console.log(posts)
             dispatch(setPosts({ posts }));
             setImage(null)
@@ -60,6 +88,9 @@ const MyPostWidget = ({ picturePath }) => {
         }
       
     }
+
+    console.log(video)
+    console.log(image)
 
     return (
 
@@ -113,7 +144,7 @@ const MyPostWidget = ({ picturePath }) => {
                                                     {!image ? ( 
                                                         <p>Add Image here</p>    
                                                     ) : (
-                                                        <FlexBetween>
+                                                        <FlexBetween> 
                                                             <Typography>{image.name}</Typography>
                                                             <EditOutlined/>
                                                         </FlexBetween>

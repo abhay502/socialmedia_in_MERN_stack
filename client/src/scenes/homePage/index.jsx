@@ -9,14 +9,18 @@ import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget"; 
 import Navbar from "../navbar/Navbar" 
 import { useEffect, useState } from "react";
+import { USERS_URL } from "Constants";
 
  
-
+ 
 const HomePage = ()=>{ 
-    const [user, setUser]= useState(null);
+    const { _id }=useSelector((state)=> state.user);
     const token =useSelector((state)=>state.token);
+
+    const [user, setUser]= useState(null);
+    
     const getUser = async ()=>{
-        const response = await fetch(`http://localhost:3001/users/${_id}`,
+        const response = await fetch(`${USERS_URL}/${_id}`,
         {
             method:"GET",
             headers:{Authorization:`Bearer ${token}`} 
@@ -30,9 +34,8 @@ const HomePage = ()=>{
         getUser()  
     },[]) 
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)"); 
-    const { _id,picturePath }=useSelector((state)=> state.user);
           
-    const friends = useSelector((state)=> state.user.friends);
+  
   
 
     return(

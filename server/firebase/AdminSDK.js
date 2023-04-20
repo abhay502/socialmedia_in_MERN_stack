@@ -6,3 +6,4 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://your-project-name.firebaseio.com'
 });
+console.log("Hello world");

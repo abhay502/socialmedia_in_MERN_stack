@@ -106,7 +106,7 @@ export const editProfile = async (req, res) => {
       const updatedEmail = req.body.email;
       const updatedNumber = req.body.number;
       const updatedPicturePath = req.body.profilePic;
-      console.log(updatedPicturePath)
+      const updatedIsPrivate = req.body.isPrivate;
   
       const user = await User.findById(userId);
   
@@ -119,15 +119,52 @@ export const editProfile = async (req, res) => {
       user.lastName = updatedLastName;
       user.email = updatedEmail;
       user.number = updatedNumber;
-      user.picturePath = updatedPicturePath;
+      user.isPrivate = updatedIsPrivate;
+  
+      // Check if a new profile picture was uploaded
+      if (updatedPicturePath) {
+        user.picturePath = updatedPicturePath;
+      }
   
       // Save updated user data to the database
-      await user.save(user.picturePath );
-       console.log()
+      await user.save();
       return res.status(200).json({ message: "Profile updated successfully" });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Server error" });
     }
   };
+
+export const getAllUsers = async (req,res)=>{
+    try {
+      
+        const users = await User.find()
+       
+        return res.status(200).json({ users });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
+}
+export const blockUser = async (req,res)=>{
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        console.log(user)
+       
+        if(user.isBlocked){
+            user.isBlocked = false 
+            await user.save();
+            res.status(200).json({ message: "User unblocked successfully" });
+        }else{
+            user.isBlocked = true;
+            await user.save();
+            res.status(200).json({ message: "User blocked successfully" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+} 
+
+  
   

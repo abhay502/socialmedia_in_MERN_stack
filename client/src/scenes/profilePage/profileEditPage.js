@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Switch, TextField, Typography } from "@mui/material";
 import { USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -16,6 +16,7 @@ const ProfileEditPage = () => {
     const [lastName, setLastName] = useState(null);
     const [email, setEmail] = useState(null); 
     const [number, setNumber] = useState(null); 
+    const [privateAccount, setPrivateAccount] = useState(false);
 
     const getUser = async () => {
         const response = await fetch(`${USERS_URL}/${userId}`, {
@@ -28,6 +29,7 @@ const ProfileEditPage = () => {
         setLastName(data.lastName);
         setEmail(data.email);
         setNumber(data.number);
+        setPrivateAccount(data.isPrivate)
     }
 
     useEffect(() => {
@@ -40,11 +42,11 @@ const ProfileEditPage = () => {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}`, 
                 "Content-Type": "application/json" },
-                body:JSON.stringify({firstName:firstName,lastName:lastName,email:email,number:number,profilePic:profilePic?.name}) 
+                body:JSON.stringify({firstName:firstName,lastName:lastName,email:email,number:number,profilePic:profilePic?.name,isPrivate:privateAccount}) 
             }).then(()=>{
              navigate('/home')
 
-            })
+            }) 
                
        
     };
@@ -86,8 +88,15 @@ const ProfileEditPage = () => {
                                 style={{ display: "none" }}
                                 onChange={handleFileSelect}
                             />
+                            Private Account
+                            <Switch
+                            checked={privateAccount}
+                            onChange={() => setPrivateAccount(!privateAccount)}
+                            color="primary"
+                            />
+
                         </Box>
-                        <TextField
+                        <TextField 
                             fullWidth
                             label="FirstName"
                             variant="outlined"

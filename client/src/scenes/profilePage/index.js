@@ -1,4 +1,5 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -36,7 +37,7 @@ const ProfilePage = () => {
     }, []);
 
     if (!user) return null;
-
+    console.log(user)
 
     return (
         <Box>
@@ -66,7 +67,19 @@ const ProfilePage = () => {
                         <MyPostWidget picturePath={Loginuser.picturePath} />
                         <Box m="2rem 0" />
 
+                        {user?.isPrivate ? user?.friends?.includes(Loginuser._id) || user?._id === Loginuser._id ?
+
                         <PostsWidget userId={userId} isProfile />
+                        :
+                        
+                        <Box ml={"1rem"} mt={"5rem"} display="flex" flexDirection="column" alignItems="center">
+                        <Box display="flex" alignItems="center" mb={1}>
+                            <LockOutlined />
+                            <Typography variant="h2" ml={1}>This account is private</Typography>
+                        </Box>
+                        <Typography variant="body1" textAlign="center">Follow this account to see their photos and videos.</Typography>
+                        </Box>  : null}
+                       
 
                     </Box>
                 </Box>
@@ -75,4 +88,4 @@ const ProfilePage = () => {
     )
 }
 
-export default ProfilePage
+export default ProfilePage 

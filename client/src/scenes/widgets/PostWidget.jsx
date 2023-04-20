@@ -8,7 +8,8 @@ import {
 
 } from "@mui/icons-material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import { hover } from "@testing-library/user-event/dist/hover";
 import { IMG_URL, POSTS_URL } from "Constants";
 
 import CommentList from "components/CommentList";
@@ -34,7 +35,10 @@ const PostWidget = ({
   comments,
   date
 }) => {
+
   const [isComments, setIsComments] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
 
@@ -52,6 +56,8 @@ const PostWidget = ({
 
   const fullName = `${user?.firstName}  ${user?.lastName}`
 
+  const likesArray = Object.entries(likes).map(([id, value]) => ({ _id: id, value }));
+  
 
   const patchLike = async () => { //post liking section
     const response = await fetch(`${POSTS_URL}/${postId}/like`, {
@@ -75,24 +81,24 @@ const PostWidget = ({
   };
 
 
-  const patchComment = async () => { //post commenting section
-    setComment('');
-    if (comment) {
-      const response = await fetch(`${POSTS_URL}/${postId}/comment`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({ userId: loggedInUserId, Username: fullName, comment: comment, userPicture: user.picturePath }),
-      });
-      const updatedPost = await response.json();
-      dispatch(setPost({ post: updatedPost }));
-      setComment(null)
+  const patchComment = async () => {
+    setComment(""); //post commenting section
+    if (comment && comment.trim()) { // Check that comment is not empty or only whitespace
+        setComment(comment.trim()); // Update comment state to remove whitespace
+        const response = await fetch(`${POSTS_URL}/${postId}/comment`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId: loggedInUserId, Username: fullName, comment: comment.trim(), userPicture: user.picturePath }),
+        });
+        const updatedPost = await response.json();
+        dispatch(setPost({ post: updatedPost }));
+         // Reset comment state
     }
+};
 
-  };
 
   const deleteComment = async () => {
 
@@ -203,7 +209,7 @@ const PostWidget = ({
                   <FavoriteBorderOutlined />
                 )}
               </IconButton>
-              <Typography sx={{ fontWeight: '500' }}>{likeCount} likes</Typography>
+              <Typography onClick={() => setOpen(true)} sx={{ fontWeight: '500', cursor: 'pointer' }} >{likeCount} likes</Typography>
             </FlexBetween>
 
             <FlexBetween gap="0.3rem">
@@ -213,6 +219,14 @@ const PostWidget = ({
               <Typography>{comments.length}</Typography>
             </FlexBetween>
           </FlexBetween>
+
+          <Dialog open={open} onClose={() => setOpen(false)}>
+            <DialogTitle>Liked by ❤️</DialogTitle>
+            {likesArray.map((like, i) => (
+              <DialogContent key={i}><CommentList userId={like?._id} /></DialogContent>
+            ))}
+          </Dialog>
+
 
           <IconButton>
             <ShareOutlined />
@@ -241,7 +255,7 @@ const PostWidget = ({
                     </Box>
 
 
-                    <Typography width={"13rem"} sx={{ ml: "0.5rem", mt: "0.4rem", fontSize: "0.9rem" }}>{comment.comment}</Typography>
+                    <Typography width={"13rem"} sx={{ ml: "0.5rem", mt: "0.4rem", fontSize: "0.9rem" }}> - {comment.comment}</Typography>
 
 
                   </Box>

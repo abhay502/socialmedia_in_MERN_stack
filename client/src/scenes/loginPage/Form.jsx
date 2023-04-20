@@ -5,6 +5,7 @@ import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
+
 import { Box, Button, TextField, useMediaQuery, Typography, useTheme } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -24,7 +25,7 @@ const OtpLoginSchema = yup.object().shape({
     .number()
     .typeError("must be a number")
     .required("required")
-    .min(10, "must be at least 10 digits")
+    .min(10, "must be at least 10 digits") 
 })
 
 const OtpVerificationSchema = yup.object().shape({
@@ -60,13 +61,13 @@ const initialValuesOtp = {
 const initialVerifyOTP = {
     otp:''
 }
-const Form = () => {
+const Form = () => { 
     //page-types
     const [pageType, setPageType] = useState("login")
-    const isLogin = pageType === "login";
+    const isLogin = pageType === "login"; 
     const isRegister = pageType === "register"
     const isOTPNumberPage = pageType === "OTPNumberPage"
-    const isOTPVerifyPage = pageType === "OTPVerifyPage"
+    const isOTPVerifyPage = pageType === "OTPVerifyPage" 
 
 
     const { palette } = useTheme()
@@ -79,7 +80,7 @@ const Form = () => {
     const [OTPSendNum,setOTPSendNum] = useState(null)
     const [numberNotExist,setnumberNotExist] = useState(null)
 
-
+ 
     const register = async (values, onSubmitProps) => {
         //this allows us to send form info with images
         const formData = new FormData();
@@ -117,14 +118,17 @@ const Form = () => {
         if (loggedInResponse.status === 400) {
             setUserNot("Email or Password Incorrect ! Please Try Again 🙏")
 
-        } else {
+        } else  if (loggedInResponse.status === 401) {
+            setUserNot("Sorry You are blocked by Admin ! 🙏")
+
+        }else {
             const loggedIn = await loggedInResponse.json();
             onSubmitProps.resetForm();
 
             dispatch(
                 setLogin({
                     user: loggedIn.user,
-                    token: loggedIn.token,
+                    token: loggedIn.token, 
                 })
             );
 
@@ -134,7 +138,6 @@ const Form = () => {
     };
 
     const OtpLogin = async (values, onSubmitProps)=> {
-        console.log("Krishhhh"+values)
         const OtpResponse = await fetch("http://localhost:3001/mobilenumber/phone", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -143,12 +146,16 @@ const Form = () => {
         
         onSubmitProps.resetForm() 
         
-        if(OtpResponse.status === 200){
+        if(OtpResponse.status === 200){ 
 
-            const response = await OtpResponse.json()
-
-       
+            const response = await OtpResponse.json()  
+            
+           console.log(values?.number)
+           
+            
            setOTPSendNum(response)
+          
+               
            setPageType("OTPVerifyPage")
            
         
@@ -175,12 +182,12 @@ const Form = () => {
         onSubmitProps.resetForm() 
     }
 
-    useEffect(() => {
+    useEffect(() => { 
         
     }, [userNot]);
 
    useEffect(()=>{
-   
+    
    },[OTPSendNum])
 
    useEffect(()=>{
@@ -282,7 +289,7 @@ const Form = () => {
                                 <Box gridColumn="span 4" border={`1px solid ${palette.neutral.medium}`}
                                     borderRadius="5px" p="1rem">
 
-                                    <Dropzone acceptedFiles=".jpg,.jpeg,.png"
+                                    <Dropzone acceptedFiles=".jpg,.jpeg,.png" 
                                         multiple={false}
                                         onDrop={(acceptedFiles) => {
                                             setFieldValue("picture", acceptedFiles[0])

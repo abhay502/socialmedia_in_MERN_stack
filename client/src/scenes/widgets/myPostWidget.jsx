@@ -10,7 +10,7 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "state";
+import state, { setPosts } from "state";
 import { POSTS_URL } from "Constants";
 
 
@@ -31,67 +31,69 @@ const MyPostWidget = ({ picturePath }) => {
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
     const [postAlert,setPostAlert]= useState(false)
+    const [validation,setValidation] = useState('');
 
     const handlePost = async () => {
-
-        const formData = new FormData();
-        if(post){
-
-            formData.append("userId", _id);
-            formData.append("description", post);
-            if (image) {
-                formData.append("picture", image); 
-                formData.append("picturePath", image.name);
-                const response = await fetch(POSTS_URL, {
-                  method: "POST",
-                  headers: { Authorization: `Bearer ${token}` },
-                  body: formData
-              });
-      
-              const posts = await response.json();  
-              console.log(posts)
-              dispatch(setPosts({ posts }));
-              setImage(null)
-              setPost("")
-            }
-            if(video){
-              formData.append("video",video);
-              formData.append("videoPath",video.name);
-              const response = await fetch(`${POSTS_URL}/video`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData
-            });
+      const formData = new FormData();
     
-            const posts = await response.json();  
-            console.log(posts) 
-            dispatch(setPosts({ posts }));
-            setVideo(null)
-            setPost("")
-            }
-           
-            
+      if (post) {
+        formData.append("userId", _id);
+        formData.append("description", post);
+    
+        if (image) {
+          if (/\.(jpe?g|png)$/i.test(image.name)) {
+            formData.append("picture", image);
+            formData.append("picturePath", image.name);
     
             const response = await fetch(POSTS_URL, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
             });
     
-            const posts = await response.json();  
-            console.log(posts)
+            const posts = await response.json();
+            console.log(posts);
             dispatch(setPosts({ posts }));
-            setImage(null)
-            setPost("")
-        }else{
-            setPostAlert(true)
+            setImage(null);
+            setPost("");
+          } else {
+            // show error message for invalid image type
+            console.log("Invalid image type");
+            setValidation("Invalid image type")
+          }
         }
-      
-    }
+    
+        if (video) {
+          if (/\.(mp4|mov|avi)$/i.test(video.name)) {
+            formData.append("video", video);
+            formData.append("videoPath", video.name);
+    
+            const response = await fetch(`${POSTS_URL}/video`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
+            });
+    
+            const posts = await response.json();
+            console.log(posts);
+            dispatch(setPosts({ posts }));
+            setVideo(null);
+            setPost("");
+          } else {
+            // show error message for invalid video type
+            console.log("Invalid video type");
+            setValidation("Invalid video type")
+           
+          }
+        }
+      } else {
+        setPostAlert(true);
+      }
+    };
+    
 
-    console.log(video)
-    console.log(image)
-
+    
+    console.log(image?.path)
     return (
 
         <WidgetWrapper>
@@ -100,6 +102,14 @@ const MyPostWidget = ({ picturePath }) => {
                  <Alert  severity="error">
               <AlertTitle>Error</AlertTitle>
                  Please add an image or desciption. <strong>Fields are empty!</strong>
+                </Alert> 
+            </Box>: null
+            }
+             {validation ? 
+            <Box mb="1rem">
+                 <Alert  severity="error">
+              <AlertTitle>Error</AlertTitle>
+                 {validation}. <strong>Please try another file 🙏</strong>
                 </Alert> 
             </Box>: null
             }

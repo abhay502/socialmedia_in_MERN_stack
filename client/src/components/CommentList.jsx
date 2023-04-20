@@ -52,7 +52,7 @@ const CommentList = ({userId})=>{
               }, 
             }}
           >
-            {user?.firstName+ " "+user?.lastName} -
+            {user?.firstName+ " "+user?.lastName} 
           </Typography> 
            
            

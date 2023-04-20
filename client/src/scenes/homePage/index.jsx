@@ -16,7 +16,7 @@ import { USERS_URL } from "Constants";
 const HomePage = ()=>{ 
     const { _id }=useSelector((state)=> state.user);
     const token =useSelector((state)=>state.token);
-
+    console.log('user'+token)
     const [user, setUser]= useState(null);
     
     const getUser = async ()=>{

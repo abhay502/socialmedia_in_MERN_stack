@@ -40,8 +40,16 @@ const UserSchema=mongoose.Schema({
     },
     location:String,
     viewedProfile:Number,
-    impressions:Number
-
+    impressions:Number,
+    isPrivate:{
+        type:Boolean,
+        default:false
+    },
+    isBlocked:{
+        type:Boolean,
+        default:false
+    }
+ 
 
 },{ timestamps:true });
 

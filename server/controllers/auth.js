@@ -19,15 +19,18 @@ export const register = async (req,res)=>{
         res.status(201).json(savedUser);
     } catch (error) { 
         res.status(500).json({error:error.message})
-    }
+    } 
 }
-
+ 
 //LOGGING IN
 export const login = async (req,res)=>{
     try {
          const {email,password}=req.body;
 
-         const user = await User.findOne({email:email});
+         const user = await User.findOne({email:email}); 
+         if(user.isBlocked){
+            res.status(401).json({msg:"User is blocked ! "})
+         }
          if(!user) return res.status(400).json({msg:"User doesn't exist ! "})
 
          const isMatch = await bcrypt.compare(password,user.password);
@@ -40,6 +43,21 @@ export const login = async (req,res)=>{
     } catch (error) {
         res.status(500).json({error:error.message})
         
+    }
+}
+
+export const adminLogin = async (req,res)=>{
+    try {
+        const {email,password}= req.body;
+        const admin = {email:'admin@gmail.com',password:'admin123321',_id:'6417024a5549b6da0b683816'}
+        if(email===admin.email && password == admin.password){
+            const token = jwt.sign({id:admin._id},process.env.JWT_SECRET);
+            res.status(200).json({token})
+        }else{
+            res.status(400).json({msg:"Password or Email You entered is Incorrect!"})
+        }
+    } catch (error) {
+        res.status(500).json({error:error.message})
     }
 }
 

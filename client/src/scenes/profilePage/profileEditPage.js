@@ -31,7 +31,7 @@ const ProfileEditPage = () => {
         setNumber(data.number);
         setPrivateAccount(data.isPrivate)
     }
-
+ 
     useEffect(() => {
         getUser() 
     }, []); 

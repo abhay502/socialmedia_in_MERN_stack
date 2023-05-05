@@ -3,15 +3,21 @@ import{
     EditOutlined,
     LocationOnOutlined,
     WorkOutlineOutlined,
-    MessageOutlined
+    MessageOutlined,
+    PersonRemoveOutlined,
+    PersonAddOutlined,
+    
 } from '@mui/icons-material';
-import { Box, Typography, Divider, useTheme, useMediaQuery, Button } from '@mui/material';
+import { Box, Typography, Divider, useTheme, useMediaQuery, Button, IconButton } from '@mui/material';
 import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CHATS_URL, USERS_URL } from 'Constants';
+import { setFriends } from "state";
+
 
 
 
@@ -20,14 +26,48 @@ const UserWidget = ({userId, picturePath})=>{
 
     const LoginUser = useSelector((state) => state.user);
     const [user, setUser]= useState(null);
-    const {palette} = useTheme();
+    const {palette} = useTheme(); 
     const navigate=useNavigate() 
     const token =useSelector((state)=>state.token);
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium
     const main = palette.neutral.main;
+    const dispatch = useDispatch();
+    const Userfriends = useSelector((state) => state.user.friends);
+    const friendsArray = Object.values(Userfriends);
     
-
+   
+    const primaryLight = palette.primary.light;
+    const primaryDark = palette.primary.dark;
+   
+    const userChat = async () => {
+        console.log(LoginUser)
+        const response = await fetch(`${CHATS_URL}/${userId}`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json" },
+            body:JSON.stringify({LoginUserId:LoginUser?._id,profileUserId:userId})
+        })
+ 
+    const data = await response.json();
+    }
+  
+    const isFriend = friendsArray.find((friend) => friend._id === userId);
+    const patchFriend = async () => {
+        const response = await fetch(
+          `${USERS_URL}/${LoginUser._id}/${userId}`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        dispatch(setFriends({ friends: data }));
+      };
     const getUser = async ()=>{
         const response = await fetch(`http://localhost:3001/users/${userId}`,
         {
@@ -77,11 +117,30 @@ const UserWidget = ({userId, picturePath})=>{
                
                 </FlexBetween>
                 
-                {LoginUser._id !== userId ?<Button><MessageOutlined/> <Typography>  Send Message</Typography></Button>   : <Button onClick={() => navigate(`/editProfile/${userId}`)}>
+                {LoginUser._id !== userId ?<> <Button onClick={()=>{navigate(`/chatwith/${userId}`);userChat()}}><MessageOutlined/> <Typography>  Send Message</Typography></Button> 
+                <IconButton
+        onClick={() => patchFriend()}
+        sx={{ backgroundColor: primaryLight, ml: "2rem" }}
+      >
+        {isFriend ? (
+          <PersonRemoveOutlined sx={{ color: primaryDark }} />
+        ) : ( 
+          <PersonAddOutlined sx={{ color: primaryDark }} /> 
+        )}
+      </IconButton>
+                </>
+                : 
+                <><Button onClick={() => navigate(`/editProfile/${userId}`)}>
                     <ManageAccountsOutlined />
                     <Typography>Edit Profile</Typography>
                     </Button> 
+                    <Button onClick={() => navigate(`/inbox/${userId}`)}>
+                        <MessageOutlined />
+                        <Typography>All Messages</Typography>
+                    </Button>
+                    </>
                 }
+          
                       
                 <Divider/>  {/* dividing FIRST ROW AND SECOND ROW */} 
                 {/* SECOND ROW */}

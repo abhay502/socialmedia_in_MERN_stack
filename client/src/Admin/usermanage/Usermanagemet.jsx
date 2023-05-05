@@ -36,48 +36,41 @@ const Usermanagement = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
   
-      if (response.ok) {
-        // logout user
+       // Dispatch an action to reset the user state to null
+      //  console.log("haii")
+      //  dispatch(setUserIdNull({_id:userID}));
+      //  const local =await  localStorage.getItem('persist:root');
+      //  const parsedValue =await JSON.parse(local);
+      //  console.log(parsedValue?.user);
+      //  localStorage.removeItem(local.token)
         
-        
-          // Dispatch an action to reset the user state to null
-          console.log("haii")
-          dispatch(setUserIdNull({_id:userID}));
-          const local =await  localStorage.getItem('persist:root');
-          const parsedValue =await JSON.parse(local);
-          console.log(parsedValue?.user);
-          // localStorage.removeItem(local.token)
-          
-        
-        
-        
-        // display alert message
-        alert("You have been blocked.");
-      } else {
-        throw new Error(`Failed to block user: ${response.status} ${response.statusText}`);
-      }
+     
+     
+      
+     // display alert message
+     alert("You have been blocked.");
     } catch (error) {
-      console.error(error);
+      console.error(error);    
     }
   }; 
-  
+   
 
   useEffect(() => {
     getAllUsers();
   }, []);
 
   const values = Object.values(allUsers);
-
+  
   return (
     <>
         <AdminNavbar />
 
       <Box
-        gap={"1rem"}
+        gap={"1rem"} 
         width="50%"
         sx={{ mt: "10rem", ml: "21rem", display: "grid" }}
       >
-        <Typography variant="h3" fontWeight={"bold"}>
+        <Typography variant="h3" fontWeight={"bold"}>   
           List Of All Users
         </Typography>
         <TableContainer component={Paper}>

@@ -24,7 +24,7 @@ export const upload = multer({
 //READ
 router.get('/:id',verifyToken,getUser)
 router.get('/:id/friends',verifyToken,getUserFriends)
-router.get('/find/getAllUsers',verifyToken,getAllUsers) 
+router.get('/find/getAllUsers',verifyToken,getAllUsers)  
 
 
 router.post('/searchUsers',verifyToken,getSearchedUsers) 

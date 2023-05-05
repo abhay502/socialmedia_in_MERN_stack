@@ -94,7 +94,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
               videoPath={videoPath}
               likes={likes}
               comments={comments}
-              date={new Date(createdAt).toLocaleString()}
+              date={createdAt}
             />
           )
         )

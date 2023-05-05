@@ -2,7 +2,7 @@ import express from 'express'
 
 //local imports
 import { getFeedPosts,getUserPosts, likePost ,commentPost,
-    deletePostComment,deletePost,getPostToEdit,submitEditPost
+    deletePostComment,deletePost,getPostToEdit,submitEditPost,reportPost
 
 } from '../controllers/posts.js'
 import { verifyToken } from '../middleware/auth.js'
@@ -22,4 +22,6 @@ router.patch('/:id/deleteComment', verifyToken, deletePostComment)
 router.patch('/:id/deletePost', verifyToken, deletePost) 
 router.patch('/:postId/submitEditPost',verifyToken, submitEditPost) 
 router.patch('/:id/comment',verifyToken,commentPost)
+router.patch('/:postId/report',verifyToken,reportPost)
+
 export default router;   

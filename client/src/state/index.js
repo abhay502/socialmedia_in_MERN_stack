@@ -7,7 +7,8 @@ const initialState = {
     token:null,
     posts:[],
     admin:null, 
-    adminToken:null
+    adminToken:null,
+    notification:[]
 };  
 
 export const authSlice = createSlice({
@@ -21,6 +22,9 @@ export const authSlice = createSlice({
             state.user = action.payload.user;
             state.token = action.payload.token;  
         },
+        setNotification:(state,action)=>{
+            state.notification = action.payload.notification;
+        }, 
         setAdminLogin:(state, action)=>{
             state.admin = action.payload.admin;
             state.adminToken = action.payload.adminToken;
@@ -39,24 +43,27 @@ export const authSlice = createSlice({
             }else{
                 console.error("User friends non-exist")
             }
-        },
+        },  
         setPosts: (state, action)=>{
             state.posts = action.payload.posts
-        },
+        }, 
         setPost: (state, action)=>{
-            const updatedPosts = state.posts.map((post)=>{ 
+            const updatedPosts = state.posts.map((post)=>{  
                 if(post._id === action.payload.post._id)return action.payload.post;
                 return post;
             })
-
+ 
             state.posts = updatedPosts;
         },
-        setUserIdNull: (state,action)=>{
-            if (state.user && state.user._id === action.payload._id) {
-                 
-                setLogout(action.payload._id)
-                state.token = null
-              }
+        setUserIdNull: (state,action)=>{ 
+            // console.log(state.user)
+            // if(state.user.includes( action.payload._id)){
+            //     state.user._id =null
+            //     state.token = null
+            // }
+            
+
+             
         }
         
           
@@ -66,5 +73,5 @@ export const authSlice = createSlice({
     }
 })
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost,setAdminLogin,setAdminLogout,setUserIdNull} = authSlice.actions;
+export const { setMode,setNotification, setLogin, setLogout, setFriends, setPosts, setPost,setAdminLogin,setAdminLogout,setUserIdNull} = authSlice.actions;
 export default authSlice.reducer;

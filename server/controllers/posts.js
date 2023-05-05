@@ -1,4 +1,5 @@
 import Post from '../models/Post.js'
+import ReportPost from '../models/ReportedPost.js';
 import User from '../models/User.js'
 
 export const createPost = async (req,res)=>{
@@ -173,5 +174,27 @@ export const submitEditPost = async (req,res) =>{
 
     } catch (error) {
         res.status(500).json({ message: "Error updating post description." });
+    }
+}
+
+export const reportPost =async (req,res)=>{
+    try {
+        const {postId}=req.params
+        const currentDate = new Date() 
+        const userId = req.body.userId;
+        const reportReason = req.body.reportReason
+        
+      
+      
+        const newReportPost = new ReportPost({
+            userId,
+            postId,
+            reportReason,
+            createdAt: currentDate
+        })
+        await  newReportPost.save();
+
+    } catch (error) {
+        res.status(500).json({ message: "Error Reporting Post." });
     }
 }

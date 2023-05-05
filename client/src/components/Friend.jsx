@@ -146,7 +146,7 @@ useEffect(() => {
           </Typography>
         </Box>
       </FlexBetween>
-      {_id !== friendId ? <IconButton
+      {_id !== friendId ? <><IconButton
         onClick={() => patchFriend()}
         sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
       >
@@ -155,7 +155,11 @@ useEffect(() => {
         ) : (
           <PersonAddOutlined sx={{ color: primaryDark }} />
         )}
-      </IconButton> : <>
+
+      </IconButton>
+      
+      </>
+      : <>
       <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
         <MoreVertRounded />
       </Button>

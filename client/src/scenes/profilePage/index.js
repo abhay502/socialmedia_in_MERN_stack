@@ -1,6 +1,6 @@
 import { LockOutlined } from "@mui/icons-material";
 import { Box, Typography, useMediaQuery } from "@mui/material";
-import { USERS_URL } from "Constants";
+import { CHATS_URL, USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -19,7 +19,8 @@ const ProfilePage = () => {
     const { userId } = useParams();
     const token = useSelector((state) => state.token);
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
-
+    
+   
     const getUser = async () => {
 
         const response = await fetch(`${USERS_URL}/${userId}`,
@@ -34,11 +35,11 @@ const ProfilePage = () => {
 
     useEffect(() => {
         getUser()
+        
     }, []);
 
     if (!user) return null;
-    console.log(user)
-
+    
     return (
         <Box>
             <Navbar  />
@@ -53,6 +54,7 @@ const ProfilePage = () => {
                 >
                     <Box position="relative" flexBasis={isNonMobileScreens ? "26%" : undefined}
                       ml={isNonMobileScreens ?  "-23rem" : undefined } >
+                        
                         <UserWidget userId={userId} picturePath={user.picturePath} /> 
                         <Box m="20rem 0" />
                         <FriendListWidget userId={userId} />

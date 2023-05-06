@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "scenes/navbar/Navbar";
 import ScrollableChat from "./ScrollableChat";
-import io from 'socket.io-client';
+import io from 'socket.io-client'; 
 import { setNotification } from "state";
 
 const { Typography, Box, Divider, FormControl, Input } = require("@mui/material")
@@ -63,7 +63,7 @@ const SingleChat = () => {
     }
 
     useEffect(() => {
-        socket = io(ENDPOINT);
+        socket = io(ENDPOINT); 
         socket.emit("setup", Loginuser);
         socket.on('connected', () => setSocketConnected(true))
         socket.on('typing', () => setIsTyping(true))

@@ -10,10 +10,10 @@ import {
 } from "@mui/icons-material"
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useDispatch, useSelector } from "react-redux"
-import { setMode, setLogout,setNotification } from "state"
+import { setMode, setLogout, setNotification } from "state"
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-import SearchResults from "./SearchResult"
+import io from 'socket.io-client';
 import UserImage from "components/UserImage"
 import { USERS_URL } from "Constants"
 import { getSender } from "scenes/message/ChatLogic";
@@ -23,6 +23,9 @@ import { Effect } from "react-notification-badge";
 
 
 
+
+const ENDPOINT = "http://localhost:3001";
+var socket
 
 const Navbar = () => {
     const [showNotifications, setShowNotifications] = useState(false);
@@ -35,8 +38,8 @@ const Navbar = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
-    const notification = useSelector((state)=> state.notification)
-   
+    const notification = useSelector((state) => state.notification)
+
     const [loggedIn, setLoggedInUser] = useState(null)
     const getUser = async () => {
 
@@ -52,7 +55,22 @@ const Navbar = () => {
 
     useEffect(() => {
         getUser()
+        socket = io(ENDPOINT);
+        socket.emit("setup", user);
+        socket.on('logoutUser', () => dispatch(setLogout()))
+
     }, []);
+    useEffect(() => {
+        socket.on('logout user', (userId) => {
+            const storageData = JSON.parse(localStorage.getItem('persist:root')); // parse the JSON string
+            const userData = JSON.parse(storageData.user); // parse the user object
+            const userIdInlocalStorage = userData._id; // access the user._id property 
+
+            if (userIdInlocalStorage === userId) {
+                dispatch(setLogout()) //logout that specific user
+            }
+        })
+    })
 
 
 
@@ -71,7 +89,7 @@ const Navbar = () => {
 
     const [search, setSearch] = useState("");
     const [searchedResults, setSearchedResults] = useState("")
-   
+
 
 
     const searchUsers = async () => {
@@ -93,7 +111,7 @@ const Navbar = () => {
         setSearchedResults(Results);
     };
 
-    
+
 
     useEffect(() => {
         // reset searched results when search query is empty
@@ -108,7 +126,7 @@ const Navbar = () => {
     const resultsArray = Object.values(searchedResults);
 
     const results = resultsArray;
-    
+
     return (
         <>
             <FlexBetween marginBottom="1rem" padding='1rem 6% ' backgroundColor={alt} position="fixed" top="0" left="0" width="100%" zIndex="999"  >
@@ -158,10 +176,10 @@ const Navbar = () => {
                             <Message sx={{ fontSize: "25px" }} />
                             <Box>
 
-                            <NotificationBadge  count={notification?.length}
-                                effect={Effect.SCALE}
-                            />
-                            <NotificationsIcon onClick={handleNotificationClick} sx={{ fontSize: "25px", cursor: "pointer" }} />
+                                <NotificationBadge count={notification?.length}
+                                    effect={Effect.SCALE}
+                                />
+                                <NotificationsIcon onClick={handleNotificationClick} sx={{ fontSize: "25px", cursor: "pointer" }} />
                             </Box>
 
                             {showNotifications && (
@@ -177,18 +195,18 @@ const Navbar = () => {
                                         zIndex: "1",
                                     }}
                                 >
-                                  <MenuList> 
-                                    {!notification?.length && "No new Messages"}
-                                    {notification?.map(notify=>( 
-                                        
-                                        <MenuItem key={notify?._id} onClick={()=>{
-                                            navigate(`/inbox/${user._id}`)
-                                            dispatch(setNotification(notification.filter((n)=>n!==notify)))
-                                        }}>
-                                            {notify?.chat?.isGroupChat?`New message in ${notify?.chat?.chatName}`:`📩New message from ${getSender(user,notify?.chat?.users)}`}
-                                        </MenuItem>
-                                    ))}
-                                  </MenuList>
+                                    <MenuList>
+                                        {!notification?.length && "No new Messages"}
+                                        {notification?.map(notify => (
+
+                                            <MenuItem key={notify?._id} onClick={() => {
+                                                navigate(`/inbox/${user._id}`)
+                                                dispatch(setNotification(notification.filter((n) => n !== notify)))
+                                            }}>
+                                                {notify?.chat?.isGroupChat ? `New message in ${notify?.chat?.chatName}` : `📩New message from ${getSender(user, notify?.chat?.users)}`}
+                                            </MenuItem>
+                                        ))}
+                                    </MenuList>
 
 
 

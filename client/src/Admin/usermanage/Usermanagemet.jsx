@@ -2,19 +2,28 @@ import AdminNavbar from "Admin/AdminNavbar";
 import { USERS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import persistStore from "redux-persist/es/persistStore";
-import localStorage from "redux-persist/es/storage";
-import state, { setLogout, setUserIdNull } from "state";
+import io from 'socket.io-client';
+
+
+
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } = require("@mui/material")
 const { Typography, Box } = require("@mui/material")
+const ENDPOINT = "http://localhost:3001";
+var socket
 
 const Usermanagement = () => {
+
+ 
   const dispatch = useDispatch();
-  const _id = useSelector((state) => state?.user?._id)
+      
 
   const token = useSelector((state) => state.adminToken);
-  const [allUsers, setAllUsers] = useState('');
+  const admin = useSelector((state) => state.admin);
+
+  const [allUsers, setAllUsers] = useState('');    
+  const [blockedUserId,setblockedUserId] = useState('');
+ 
+ 
   const getAllUsers = async () => {
     try {
       const response = await fetch(`${USERS_URL}/find/getAllUsers`, {
@@ -27,37 +36,34 @@ const Usermanagement = () => {
     } catch (error) {
       console.log(error.message);
     }
-  };
-
+  }; 
+ 
   const blockUser = async (userID) => {
     try {
       const response = await fetch(`${USERS_URL}/${userID}/find/blockUser`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
-  
-       // Dispatch an action to reset the user state to null
-      //  console.log("haii")
-      //  dispatch(setUserIdNull({_id:userID}));
-      //  const local =await  localStorage.getItem('persist:root');
-      //  const parsedValue =await JSON.parse(local);
-      //  console.log(parsedValue?.user);
-      //  localStorage.removeItem(local.token)
+      const data = await response.json()
+      if(response.status === 200){
+        console.log(data)
+        setblockedUserId(data.userId)
+        socket.emit("blockUser",data.userId)
+        getAllUsers() 
         
-     
-     
-      
-     // display alert message
-     alert("You have been blocked.");
-    } catch (error) {
+      }
+    } catch (error) { 
       console.error(error);    
     }
   }; 
-   
+  
+ 
 
   useEffect(() => {
-    getAllUsers();
-  }, []);
+    socket = io(ENDPOINT); 
+    
+    getAllUsers(); 
+  }, []); 
 
   const values = Object.values(allUsers);
   

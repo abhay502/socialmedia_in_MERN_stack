@@ -152,13 +152,13 @@ export const blockUser = async (req,res)=>{
         console.log(user)
        
         if(user.isBlocked){
-            user.isBlocked = false 
+            user.isBlocked = false  
             await user.save();
             res.status(200).json({ message: "User unblocked successfully" });
         }else{
             user.isBlocked = true;
             await user.save();
-            res.status(200).json({ message: "User blocked successfully" });
+            res.status(200).json({ message: "User blocked successfully",userId:userId });
         }
     } catch (error) {
         console.log(error);

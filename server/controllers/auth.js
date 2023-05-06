@@ -49,15 +49,23 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email: email });
         if (user.isBlocked) {
             res.status(401).json({ msg: "User is blocked ! " })
+        }else if (!user) {
+            return res.status(400).json({ msg: "User doesn't exist ! " })
+        } else {
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch){
+                return res.status(400).json({ msg: "Password You entered is Incorrect!" })
+            }else{
+                const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+                delete user.password;
+                res.status(200).json({ token, user })
+            } 
+
+           
         }
-        if (!user) return res.status(400).json({ msg: "User doesn't exist ! " })
+       
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ msg: "Password You entered is Incorrect!" })
-
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        delete user.password;
-        res.status(200).json({ token, user })
+        
 
     } catch (error) {
         res.status(500).json({ error: error.message })

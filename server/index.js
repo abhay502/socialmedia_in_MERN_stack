@@ -9,13 +9,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from "path";
 import { fileURLToPath } from 'url';
-import User from './models/User.js';
-import Post from './models/Post.js';          
-import { users, posts } from "./data/index.js" 
-
 //local imports 
 import authRoutes from './routes/auth.js'
- 
 import { verifyToken } from './middleware/auth.js';
 import {register} from './controllers/auth.js'
 import userRoutes from './routes/users.js'                      
@@ -23,7 +18,6 @@ import postRoutes from './routes/posts.js'
 import chatRoutes from './routes/chatRoutes.js' 
 import messageRoutes from './routes/messageRoutes.js'
 import {createPost} from './controllers/posts.js'
-
 
 
 //BACKEND CONFIGURATIONS
@@ -50,7 +44,7 @@ const storage=multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         cb(null, file.originalname)
-    },  
+    },   
 });
 export const upload = multer({
     storage:storage,
@@ -61,11 +55,8 @@ export const upload = multer({
 
 //ROUTES WITH FILES
 app.post("/auth/register", upload.single("picture"), register);
-
 app.post("/posts", verifyToken,  upload.single("picture"),createPost)
 app.post("/posts/video", verifyToken,  upload.single("video"),createPost)
-
-
 //ROUTES
 app.use("/auth", authRoutes); 
 app.use("/users", userRoutes); 
@@ -73,17 +64,8 @@ app.use("/posts", postRoutes);
 app.use("/chat",chatRoutes)
 app.use("/message",messageRoutes);
 
-
-
- 
- 
-
-
-
-
 //MONGOOSE SETUP
 const PORT = process.env.PORT || 6001;
-
 mongoose.connect(process.env.MONGO_URL,{ 
     useNewUrlParser:true,
     useUnifiedTopology:true,  
@@ -108,7 +90,7 @@ mongoose.connect(process.env.MONGO_URL,{
       console.log(userData._id)
       socket.emit("connected");
     });
-
+    socket.on("blockUser",(userId)=>socket.emit('logoutUser'));
     socket.on("join chat",(room)=>{
        socket.join(room);
        console.log("User Joined Room : "+room)
@@ -117,14 +99,21 @@ mongoose.connect(process.env.MONGO_URL,{
     socket.on('typing',(room)=>socket.in(room).emit('typing'));
     socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'));
 
-                                 
-    socket.on("new message",(newMessageRecived)=>{
+
+    socket.on("blockUser",(userId)=>{
+        console.log("blockuserId",userId)
+         
+        socket.in(userId).emit("logout user",userId) 
+    })    
+    
+         
+    socket.on("new message",(newMessageRecived)=>{ 
         var chat = newMessageRecived.chat;
         if(!chat.users) return console.log('chat.users not defined');
    
         chat.users.forEach(user =>{ 
             console.log("userId:"+user._id)
-            console.log("senderId"+newMessageRecived.sender._id)
+            console.log("senderId"+newMessageRecived.sender._id) 
               
             socket.in(user._id).emit("message recieved",newMessageRecived);                                   
         })

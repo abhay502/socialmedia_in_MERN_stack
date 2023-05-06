@@ -1,11 +1,11 @@
 import { CHATS_URL } from "Constants";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import Navbar from "scenes/navbar/Navbar";
 import { Typography, Box } from "@mui/material";
 import UserImage from "components/UserImage";
-import FlexBetween from "components/FlexBetween";
+
 
 const MessageComponent = () => {
     const navigate = useNavigate()

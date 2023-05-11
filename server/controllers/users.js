@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import Post from '../models/Post.js'
+
 
 //READ
 export const getUser = async (req,res)=>{
@@ -145,7 +147,7 @@ export const getAllUsers = async (req,res)=>{
         return res.status(500).json({ message: "Server error" });
     }
 }
-export const blockUser = async (req,res)=>{
+export const blockUser = async (req,res)=>{ 
     try {
         const userId = req.params.id;
         const user = await User.findById(userId);
@@ -165,6 +167,37 @@ export const blockUser = async (req,res)=>{
         res.status(500).json({ message: "Internal server error" });
     }
 } 
+export const getUserForAdmin = async (req, res) => {
+    try {
+      const searchKey = req.params.searchKey;
+      let user;
+  
+      if (searchKey) {
+        user = await User.find({ firstName: { $regex: searchKey, $options: "i" }  });
+      } else {
+        user = await User.find({});
+      }
+  
+      res.status(200).json(user);   
+    } catch (error) {
+      console.log(error); 
+      res.status(500).json({ error: "Internal server error" });
+    }
+};
+                                                            
+export const getTotalActiveUsers = async(req,res)=>{
+    try {
+        const activeUsers = User.find({isBlocked:false})
+        const totalFeed = Post.find()
+        const totalActiveUsers = (await activeUsers).length;
+        const totalFeedCount = (await totalFeed).length;
+       
+        res.status(200).json({totalActiveUsers:totalActiveUsers,totalFeedCount:totalFeedCount}); 
+    } catch (error) {
+        console.error(error); 
+        throw new Error('Error fetching active users');
+    }
+  } 
 
   
-  
+       

@@ -14,6 +14,8 @@ import Usermanagement from "Admin/usermanage/Usermanagemet";
 import MessageComponent from "scenes/message/AllMessagePage";
 import SingleChat from "scenes/message/SingleChat";
 import Otploginpage from "scenes/loginPage/Otploginpage";
+import Postmanagement from "Admin/postmanagement/Postmanagement";
+import Analytics from "Admin/analytics/Analytics";
 
 
  
@@ -46,11 +48,11 @@ function App({ userIsAuthenticated, adminIsAuthenticated }) {
               path="/editProfile/:userId"  
               element={isauth ? <ProfileEditPage /> : <Navigate to="/" />} 
             /> 
-            <Route
+            <Route 
               path="/inbox/:userId" 
               element={isauth ? <MessageComponent /> : <Navigate to="/" />}
             /> 
-             <Route
+             <Route 
               path="/chatwith/:userId" 
               element={isauth ? <SingleChat /> : <Navigate to="/" />}
             /> 
@@ -62,11 +64,15 @@ function App({ userIsAuthenticated, adminIsAuthenticated }) {
               element={isAdminAuth ? <AdminPanel /> : <Navigate to="/adminlogin" />}
             />
             <Route path="/usermanagement" element={isAdminAuth?<Usermanagement/>:<Navigate to='/adminlogin'/>} />
-          </Routes>
+            <Route path="/postmanagement" element={isAdminAuth?<Postmanagement/>:<Navigate to='/adminlogin'/>} />
+            <Route path="/analytics" element={isAdminAuth?<Analytics/>:<Navigate to='/adminlogin'/>} />
 
-   
+
+          </Routes>  
+
+      
         </ThemeProvider>
-
+ 
 
       </BrowserRouter> 
     </div>

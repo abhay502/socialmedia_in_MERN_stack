@@ -1,5 +1,6 @@
 import express from 'express';
-import {getUser,getUserFriends,addRemoveFriends,getSearchedUsers,editProfile,getAllUsers,blockUser} from '../controllers/users.js'
+import {getUser,getUserFriends,addRemoveFriends,getSearchedUsers,editProfile,getAllUsers,blockUser,getUserForAdmin,
+    getTotalActiveUsers} from '../controllers/users.js'
 import {verifyToken} from '../middleware/auth.js'
 import multer from 'multer';
 
@@ -25,6 +26,8 @@ export const upload = multer({
 router.get('/:id',verifyToken,getUser)
 router.get('/:id/friends',verifyToken,getUserFriends)
 router.get('/find/getAllUsers',verifyToken,getAllUsers)  
+router.get('/searchUserAdmin/:searchKey',verifyToken,getUserForAdmin)
+router.get('/get/totalActiveUsers',verifyToken,getTotalActiveUsers)
 
 
 router.post('/searchUsers',verifyToken,getSearchedUsers) 

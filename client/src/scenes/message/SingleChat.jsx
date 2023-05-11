@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { CHATS_URL, MESSAGE_URL, USERS_URL } from "Constants";
 
 import UserImage from "components/UserImage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "scenes/navbar/Navbar";
@@ -38,50 +38,51 @@ const SingleChat = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [notification, setNotificationn] = useState([]);
 
-    const fetchChats = async () => {
+    const fetchChats = useCallback(async () => {
         const response = await fetch(`${CHATS_URL}/${userId}/${Loginuser?._id}`, {
             method: "GET",
             headers: { Authorization: `Bearer ${token}`, }
         });
         const data = await response.json();
         setSelectedChat(data)
-    }
+    }, [userId, Loginuser, token]); 
 
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         if (selectedChat.length < 1) return;
         try {
-            const response = await fetch(`${MESSAGE_URL}/${selectedChat[0]?._id}`, {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}`, }
-            });
-            const data = await response.json();
-            setMessages(data)
-            socket.emit('join chat', selectedChat[0]._id);
+          const response = await fetch(`${MESSAGE_URL}/${selectedChat[0]?._id}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json();
+          setMessages(data);
+          socket.emit("join chat", selectedChat[0]._id);
         } catch (error) {
-            console.log(error.message)
-        }
-    }
+          console.log(error.message);
+        } 
+      }, [selectedChat, token]);
 
-    useEffect(() => {
+   
+ 
+      const getUser = useCallback(async () => {
+        const response = await fetch(`${USERS_URL}/${userId}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}`, }
+        });
+        const data = await response.json();
+        setUser(data)
+      }, [userId, token]);
+
+    useEffect(() => { 
         socket = io(ENDPOINT); 
         socket.emit("setup", Loginuser);
         socket.on('connected', () => setSocketConnected(true))
-        socket.on('typing', () => setIsTyping(true))
+        socket.on('typing', () => setIsTyping(true)) 
         socket.on('stop typing', () => setIsTyping(false));
 
         getUser()
         fetchChats()
-    }, []);
-
-    const getUser = async () => {
-        const response = await fetch(`${USERS_URL}/${userId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}`, }
-        });
-        const data = await response.json();
-        setUser(data)
-
-    }
+    }, [fetchChats,getUser,Loginuser]);  
 
     const sendMessage = async (event) => {
         if (event.key === "Enter" && newMessage) {
@@ -117,7 +118,7 @@ const SingleChat = () => {
         if (!typing) {
             setTyping(true)
             socket.emit('typing', selectedChat[0]._id);
-            console.log("Korean")
+           
         }
         let lastTypingTime = new Date().getTime()
         var timerLength = 3000;
@@ -134,9 +135,9 @@ const SingleChat = () => {
     useEffect(() => {
         fetchMessages();
         selectedChatCompare = selectedChat
-    }, [selectedChat]);
+    }, [selectedChat,fetchMessages]);
 
-    console.log(notification,'-------------------------------')
+   
     useEffect(() => {
         socket.on('message recieved', (newMessageRecieved) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
@@ -161,7 +162,7 @@ const SingleChat = () => {
             }
         })
     })
-
+ 
 
     if (!user) {
         return null

@@ -58,7 +58,7 @@ app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken,  upload.single("picture"),createPost)
 app.post("/posts/video", verifyToken,  upload.single("video"),createPost)
 //ROUTES
-app.use("/auth", authRoutes); 
+app.use("/auth", authRoutes);  
 app.use("/users", userRoutes); 
 app.use("/posts", postRoutes);
 app.use("/chat",chatRoutes)
@@ -67,10 +67,10 @@ app.use("/message",messageRoutes);
 //MONGOOSE SETUP
 const PORT = process.env.PORT || 6001;
 mongoose.connect(process.env.MONGO_URL,{ 
-    useNewUrlParser:true,
-    useUnifiedTopology:true,  
+    useNewUrlParser:true,                                        
+    useUnifiedTopology:true,   
 
-}).then(()=>{
+}).then(()=>{ 
 
  const server =   app.listen(PORT,()=>console.log(`Server Port:${PORT}`)) 
  

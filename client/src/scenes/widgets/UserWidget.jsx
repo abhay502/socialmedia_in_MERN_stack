@@ -13,7 +13,7 @@ import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect,useState } from 'react';
+import { useCallback, useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CHATS_URL, USERS_URL } from 'Constants';
 import { setFriends } from "state";
@@ -41,7 +41,7 @@ const UserWidget = ({userId, picturePath})=>{
     const primaryDark = palette.primary.dark;
    
     const userChat = async () => {
-        console.log(LoginUser)
+       
         const response = await fetch(`${CHATS_URL}/${userId}`,
         {
             method: "POST",
@@ -51,6 +51,7 @@ const UserWidget = ({userId, picturePath})=>{
         })
  
     const data = await response.json();
+    console.log(data)
     }
   
     const isFriend = friendsArray.find((friend) => friend._id === userId);
@@ -68,20 +69,19 @@ const UserWidget = ({userId, picturePath})=>{
         const data = await response.json();
         dispatch(setFriends({ friends: data }));
       };
-    const getUser = async ()=>{
-        const response = await fetch(`http://localhost:3001/users/${userId}`,
-        {
-            method:"GET",
-            headers:{Authorization:`Bearer ${token}`} 
+      const getUser = useCallback(async () => {
+        const response = await fetch(`http://localhost:3001/users/${userId}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
         });
-
-        const data = await response.json() 
-        setUser(data) 
-    };
+    
+        const data = await response.json();
+        setUser(data);
+    }, [userId, token]);
 
     useEffect(()=>{ 
-        getUser()  
-    },[]) 
+        getUser()   
+    },[getUser]) 
  
     if(!user)return null;
 

@@ -2,10 +2,10 @@ import { PersonAddOutlined, PersonRemoveOutlined, MoreVertRounded ,DeleteForever
 import { Box, IconButton, Typography, useTheme,MenuItem,Menu,Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setFriends } from "state";
+import  { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { setPost } from "state";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -29,21 +29,30 @@ const style = {
 };
 
 const Friend = ({ friendId, name, subtitle, userPicturePath ,postId}) => {
-  const getUser = async () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const response = await fetch(`${USERS_URL}/${friendId}`,
-        {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` }
-        })
+  const [user, setUser] = useState(null)
+  
+  
+  const { _id } = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token);
 
+  const friends = useSelector((state) => state.user.friends);
+
+  const getUser = useCallback(async () => {
+    const response = await fetch(`${USERS_URL}/${friendId}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
     const data = await response.json();
     setUser(data);
-}
-
+  }, [friendId, token]);
+  
 useEffect(() => {
     getUser()
-}, []);
+}, [getUser]);  
+
   const [open, setOpen] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,21 +75,13 @@ useEffect(() => {
   };
 
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [user, setUser] = useState(null)
-   
-  const { _id } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
-
-  const friends = useSelector((state) => state.user.friends);
+ 
   const friendsArray = Object.values(friends);
   
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
-  const main = palette.neutral.main;
+  const main = palette.neutral.main; 
   const medium = palette.neutral.medium;
 
   const isFriend = friendsArray.find((friend) => friend._id === friendId);
@@ -99,6 +100,7 @@ useEffect(() => {
     }); 
     // console.log(response) 
     const updatedPost = await response.json();
+    getUser() 
     console.log(updatedPost)
     dispatch(setPost({ post: updatedPost })); 
     

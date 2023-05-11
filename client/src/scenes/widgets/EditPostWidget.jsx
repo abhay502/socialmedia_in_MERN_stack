@@ -4,7 +4,7 @@ import { Box, Button, InputBase, Typography } from "@mui/material";
 import { IMG_URL, POSTS_URL } from "Constants";
 
 import WidgetWrapper from "components/WidgetWrapper";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -18,24 +18,24 @@ const EditPostWidget = ({ postId }) => {
     const [post,setPost] = useState(null);
     const [updatePost,setUpdatePost] = useState('');
     
-    const getPostToEdit = async ()=>{
-        const response = await fetch(`${POSTS_URL}/${postId}/getPostToEdit`,{
+    const getPostToEdit = useCallback(async () => {
+        const response = await fetch(`${POSTS_URL}/${postId}/getPostToEdit`, {
             method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-        })
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    
         const data = await response.json();
-        
-          setPost(data)
-          setUpdatePost(data)
-             
-    }
+        setPost(data);
+        setUpdatePost(data);
+    }, [postId, token]);
 
     useEffect(()=>{
         getPostToEdit()
-    },[])
+    },[getPostToEdit])
     
     
-     const  date=new Date(post?.createdAt).toLocaleString()
+    //  const  date=new Date(post?.createdAt).toLocaleString()
+
 
     const  submitEditPost =async ()=>{
        navigate('/home')
@@ -48,7 +48,7 @@ const EditPostWidget = ({ postId }) => {
 
         })
 
-        const data = await response.json();
+        console.log(response)
     } 
     const  handleButtonClick = ()=> {
         submitEditPost();

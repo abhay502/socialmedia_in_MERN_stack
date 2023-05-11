@@ -2,7 +2,7 @@ import { Typography,Box,useTheme, useMediaQuery } from "@mui/material";
 import { USERS_URL } from "Constants";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
 
 import { setFriends } from "state";
@@ -18,22 +18,19 @@ const FriendListWidget =({ userId }) => {
     const friends = useSelector((state)=> state.user.friends); 
     
     
-    const getFriends = async ()=>{ 
-       
-        const response = await fetch(`${USERS_URL}/${userId}/friends`,
-        {
-            method:"GET",
-            headers:{Authorization:`Bearer ${token}`}
-        }); 
-       
-        const data = await response.json(); 
-        
-        dispatch(setFriends({ friends:data})) 
-    };
+    const getFriends = useCallback(async () => {
+        const response = await fetch(`${USERS_URL}/${userId}/friends`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    
+        const data = await response.json();
+        dispatch(setFriends({ friends: data }));
+    }, [userId, token, dispatch]);
 
-    useEffect(()=>{   
+    useEffect(()=>{    
         getFriends()
-    },[]); 
+    },[getFriends]); 
        
     return(
         <WidgetWrapper position={isNonMobileScreens ? "fixed" : undefined} marginTop="10.7rem" width="25%">

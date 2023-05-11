@@ -1,23 +1,16 @@
 
-import { useTheme } from "@emotion/react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 
 const { Typography, Button, Box } = require("@mui/material")
 
 
-const AdminPanel = ()=>{
+const AdminPanel = ()=>{ 
     const navigate = useNavigate()
-    const theme = useTheme();
-    const neutralLight = theme.palette.neutral.light; 
-    const dark = theme.palette.neutral.dark;
-    const background = theme.palette.background.default;
-    const primaryLight = theme.palette.primary.light;
-    const alt = theme.palette.background.alt;
-    const dispatch = useDispatch();
+    
+    
 
-    return(
+    return(   
         <>
         
         <AdminNavbar />
@@ -25,8 +18,8 @@ const AdminPanel = ()=>{
           <Typography variant="h5" fontWeight='bold' ml='19rem'>Admin Panel Menu</Typography>
 
           <Button onClick={()=>navigate('/usermanagement')} sx={{ borderRadius: '20px ', border:'1px solid ' }}><Typography variant="h3" fontWeight={"bold"}>USER MANAGEMENT</Typography></Button>
-          <Button sx={{ borderRadius: '20px ', border:'1px solid '}}><Typography variant="h3" fontWeight={"bold"}>POST MANAGEMENT</Typography></Button>
-          <Button sx={{ borderRadius: '20px ', border:'1px solid '}}><Typography variant="h3" fontWeight={"bold"}>ANALYTICS AND INSIGHTS</Typography></Button>
+          <Button onClick={()=>navigate('/postmanagement')} sx={{ borderRadius: '20px ', border:'1px solid '}}><Typography variant="h3" fontWeight={"bold"}>POST MANAGEMENT</Typography></Button>
+          <Button  onClick={()=>navigate('/analytics')} sx={{ borderRadius: '20px ', border:'1px solid '}}><Typography variant="h3" fontWeight={"bold"}>ANALYTICS AND INSIGHTS</Typography></Button>
 
         </Box>
         </>

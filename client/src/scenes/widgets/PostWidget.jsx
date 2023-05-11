@@ -10,17 +10,16 @@ import {
 } from "@mui/icons-material";
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Select, NativeSelect, Alert, Tooltip } from "@mui/material";
-import { hover } from "@testing-library/user-event/dist/hover";
+import { Box, Divider, IconButton, InputBase, Button, Typography, useTheme, Dialog, DialogTitle, DialogContent, DialogActions,  NativeSelect, Tooltip } from "@mui/material";
+
 import { IMG_URL, POSTS_URL } from "Constants";
 import CommentList from "components/CommentList";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import { formatDistanceToNow } from 'date-fns';
-import WidgetWrapper from "components/WidgetWrapper";
+import WidgetWrapper from "components/WidgetWrapper"; 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { setPost } from "state";
 
 const PostWidget = ({
@@ -32,7 +31,7 @@ const PostWidget = ({
   picturePath,
   videoPath,
 
-  likes,
+  likes, 
   comments,
   date
 }) => {
@@ -57,7 +56,7 @@ const PostWidget = ({
   const user = useSelector((state) => state.user);
 
 
-  const navigate = useNavigate()
+   
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
 
@@ -168,7 +167,7 @@ const PostWidget = ({
 
       <WidgetWrapper m="2rem 0">
 
-        <Friend
+        <Friend 
           friendId={postUserId}
           name={postUserId}
           subtitle={location}
@@ -181,7 +180,7 @@ const PostWidget = ({
           Posted On :{formattedDate}
         </Typography>
 
-        {picturePath && (
+        {picturePath && ( 
           <div style={{ position: "relative" }}>
             {showLove && (
               <div style={{

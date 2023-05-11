@@ -25,7 +25,7 @@ export const createPost = async (req,res)=>{
 
         const post = await Post.find().sort({_id:-1}); //this will find all the posts to front end after creating a new posts.
         res.status(201).json(post) //201 represents created something
-    } catch (error) {
+    } catch (error) { 
         res.status(409).json({message:error.message})
     }
 }
@@ -138,7 +138,8 @@ export const deletePost = async (req, res) => {
       
   
       
-      await Post.findByIdAndDelete(id);
+      await Post.findByIdAndDelete(id); 
+      await ReportPost.findOneAndDelete({postId:id}); 
       const post = await Post.find().sort({ _id: -1 }); //this will find all the posts to front end after creating a new posts.
         res.status(200).json(post) //200 represents successfull request
     
@@ -152,7 +153,7 @@ export const getPostToEdit = async (req,res) =>{
         const {postId} = req.params;
         const post = await Post.findById(postId);
         res.status(200).json(post)
-
+ 
     } catch (error) {
         res.status(400).json(error.message)
         
@@ -198,3 +199,55 @@ export const reportPost =async (req,res)=>{
         res.status(500).json({ message: "Error Reporting Post." });
     }
 }
+export const getAllReportedPosts = async (req, res) => {
+    try {
+        const sortOrder = req.query.sort
+    
+        if(sortOrder === 'asc'){
+            var reportedPosts = await ReportPost.find().sort({ _id: -1 });
+        }else{
+            var reportedPosts = await ReportPost.find().sort({ _id: 1 }); 
+        }
+      
+      
+      // Get all the unique postIds from the reported posts array
+      const uniquePostIds = [...new Set(reportedPosts.map(rp => rp.postId))];
+      const uniqueUserIds = [...new Set(reportedPosts.map(rp => rp.userId))];
+  
+      // Find all the posts in the Posts collection that match the unique postIds from the reported posts array
+      const posts = await Post.find({ _id: { $in: uniquePostIds } });
+      const users = await User.find({_id:{ $in: uniqueUserIds }})
+  
+      // Combine the reported posts and their corresponding posts into a single object
+      const reportedPostsWithPosts = reportedPosts.map(rp => ({
+        postId: rp.postId, 
+        userId:rp.userId,
+        reportReason:rp.reportReason,
+        createdAt:rp.createdAt,
+        post: posts.find(p => p._id.toString() === rp.postId.toString()),
+        reportedUser: users.find(p => p._id.toString() === rp.userId.toString())
+      }));
+   
+      res.status(200).json(reportedPostsWithPosts);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+};
+export const getThatPost = async (req,res)=>{
+    try { 
+         
+      const post = await Post.find({ _id:req.params.postId });
+     
+      const postedUserId = [...new Set(post.map(pst => pst.userId))];
+      const postedUser = await User.find({_id:{ $in: postedUserId }})
+       
+      const finalResult= [{post,postedUser}]
+      console.log(finalResult)
+      res.status(200).json(finalResult);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+        
+    }
+}
+  
+   

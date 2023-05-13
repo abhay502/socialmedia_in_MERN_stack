@@ -93,7 +93,7 @@ const MyPostWidget = ({ picturePath }) => {
     
 
     
-    console.log(image?.path)
+    
     return (
 
         <WidgetWrapper>

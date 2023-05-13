@@ -185,7 +185,7 @@ export const getUserForAdmin = async (req, res) => {
     }
 };
                                                             
-export const getTotalActiveUsers = async(req,res)=>{
+export const getTotalActiveUsers = async(req,res)=>{ 
     try {
         const activeUsers = User.find({isBlocked:false})
         const totalFeed = Post.find()
@@ -197,7 +197,17 @@ export const getTotalActiveUsers = async(req,res)=>{
         console.error(error); 
         throw new Error('Error fetching active users');
     }
-  } 
+}
+
+export const getActiveDate = async(req,res)=>{
+    try {
+        const activeUsers = await User.find({isBlocked:false})
+        res.status(200).json({activeUsers:activeUsers})
+    } catch (error) {
+        console.error(error); 
+        throw new Error('Error fetching active users');
+    }
+}
 
   
        

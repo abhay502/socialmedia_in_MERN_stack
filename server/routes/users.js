@@ -1,6 +1,6 @@
 import express from 'express';
 import {getUser,getUserFriends,addRemoveFriends,getSearchedUsers,editProfile,getAllUsers,blockUser,getUserForAdmin,
-    getTotalActiveUsers} from '../controllers/users.js'
+    getTotalActiveUsers,getActiveDate} from '../controllers/users.js'
 import {verifyToken} from '../middleware/auth.js'
 import multer from 'multer';
 
@@ -28,6 +28,8 @@ router.get('/:id/friends',verifyToken,getUserFriends)
 router.get('/find/getAllUsers',verifyToken,getAllUsers)  
 router.get('/searchUserAdmin/:searchKey',verifyToken,getUserForAdmin)
 router.get('/get/totalActiveUsers',verifyToken,getTotalActiveUsers)
+router.get('/get/activeDate',verifyToken,getActiveDate)
+
 
 
 router.post('/searchUsers',verifyToken,getSearchedUsers) 

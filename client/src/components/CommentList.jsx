@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
@@ -16,25 +16,22 @@ const CommentList = ({userId})=>{
   const [user, setUser] = useState(null) 
   const token = useSelector((state) => state.token);
 
-    const getUser = async () => {
-
-        const response = await fetch(`${USERS_URL}/${userId}`,
-            {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
-            })
-    
-        const data = await response.json(); 
-        setUser(data);
-    }
+  const getUser = useCallback(async () => {
+    const response = await fetch(`${USERS_URL}/${userId}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    setUser(data);
+  }, [token, userId]);
     
     useEffect(() => {
         getUser()
-    }, []);
+    }, [getUser]);
   
 
     return(
-        <>
+        <> 
         <FlexBetween gap={"0.8rem"}  onClick={() => {
             navigate(`/profile/${user?._id}`);
             navigate(0);

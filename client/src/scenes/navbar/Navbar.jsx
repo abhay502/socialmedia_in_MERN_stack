@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import {
     Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, List, ListItem, MenuList,
 
@@ -41,25 +41,29 @@ const Navbar = () => {
     const notification = useSelector((state) => state.notification)
 
     const [loggedIn, setLoggedInUser] = useState(null)
-    const getUser = async () => {
-
-        const response = await fetch(`${USERS_URL}/${user?._id}`,
-            {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
-            })
-
-        const data = await response.json();
+    const getUser = useCallback(async () => {
+        const response = await fetch(`${USERS_URL}/${user?._id}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json(); 
         setLoggedInUser(data);
-    }
+      }, [token, user]);    
 
     useEffect(() => {
-        getUser()
+        
+      
+        getUser();
+      
         socket = io(ENDPOINT);
         socket.emit("setup", user);
-        socket.on('logoutUser', () => dispatch(setLogout()))
-
-    }, []);
+        socket.on('logoutUser', () => dispatch(setLogout()));
+      
+        return () => {
+          // Cleanup function
+          socket.disconnect();
+        }
+      }, [dispatch, getUser, user]);
     useEffect(() => {
         socket.on('logout user', (userId) => {
             const storageData = JSON.parse(localStorage.getItem('persist:root')); // parse the JSON string
@@ -92,7 +96,7 @@ const Navbar = () => {
 
 
 
-    const searchUsers = async () => {
+    const searchUsers = async () => { 
         // if (search.trim() === '') {
         //   setSearchedResults('');
         //   return;

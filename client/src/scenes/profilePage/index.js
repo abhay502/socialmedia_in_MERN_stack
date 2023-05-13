@@ -1,9 +1,9 @@
 import { LockOutlined } from "@mui/icons-material";
 import { Box, Typography, useMediaQuery } from "@mui/material";
-import { CHATS_URL, USERS_URL } from "Constants";
-import { useEffect, useState } from "react";
+import {  USERS_URL } from "Constants";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom"; 
 import Navbar from "scenes/navbar/Navbar";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import MyPostWidget from "scenes/widgets/myPostWidget";
@@ -21,27 +21,24 @@ const ProfilePage = () => {
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)")
     
    
-    const getUser = async () => {
-
-        const response = await fetch(`${USERS_URL}/${userId}`,
-            {
-                method: "GET",
-                headers: { Authorization: `Bearer ${token}` }
-            })
-
+    const getUser = useCallback(async () => {
+        const response = await fetch(`${USERS_URL}/${userId}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await response.json();
         setUser(data);
-    }
+      }, [userId, token]);
 
-    useEffect(() => {
+    useEffect(() => { 
         getUser()
         
-    }, []);
+    }, [getUser]);
 
     if (!user) return null;
     
     return (
-        <Box>
+        <Box> 
             <Navbar  />
             <Box marginTop="5rem" 
                   zIndex="1">
@@ -49,24 +46,30 @@ const ProfilePage = () => {
                 <Box width="100%"
                     padding="2rem 6%"
                     display={isNonMobileScreens ? "flex" : "block"}
-                    gap="2rem"
+                    gap="0.5rem"
                     justifyContent="center"
                 >
                     <Box position="relative" flexBasis={isNonMobileScreens ? "26%" : undefined}
                       ml={isNonMobileScreens ?  "-23rem" : undefined } >
-                        
+                         
                         <UserWidget userId={userId} picturePath={user.picturePath} /> 
                         <Box m="20rem 0" />
+                       
+                    </Box>
+                    <Box position="absolute" flexBasis={isNonMobileScreens ? "26%" : undefined}
+                      ml={isNonMobileScreens ?  "40rem" : undefined }  mt={isNonMobileScreens ?  "-10.6rem" : undefined } >
+                         
+                       
                         <FriendListWidget userId={userId} />
                     </Box>
  
-                    <Box flexBasis={isNonMobileScreens ? "42%" : undefined}
+                    <Box  flexBasis={isNonMobileScreens ? "42%" : undefined}
 
                         mt={isNonMobileScreens ? undefined : "2rem"}
-                      ml={isNonMobileScreens ?  "2rem" : undefined } >
+                      ml={isNonMobileScreens ?  "1rem" : undefined } >
                       
-                          
-                        <MyPostWidget picturePath={Loginuser.picturePath} />
+                           
+                        <MyPostWidget picturePath={Loginuser.picturePath} /> 
                         <Box m="2rem 0" />
 
                         {user?.isPrivate ? user?.friends?.includes(Loginuser._id) || user?._id === Loginuser._id ?
@@ -85,8 +88,11 @@ const ProfilePage = () => {
 
                     </Box>
                 </Box>
+                   
             </Box>
+           
         </Box>
+        
     )
 }
 

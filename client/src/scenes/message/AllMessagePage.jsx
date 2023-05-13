@@ -1,5 +1,5 @@
 import { CHATS_URL } from "Constants";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {  useNavigate, useParams } from "react-router-dom";
 import Navbar from "scenes/navbar/Navbar";
@@ -9,23 +9,23 @@ import UserImage from "components/UserImage";
 
 const MessageComponent = () => {
     const navigate = useNavigate()
-
+ 
     const { userId } = useParams();
     const token = useSelector((state) => state.token);
     const [chats, setChats] = useState([]);
 
-    const fetchAllChats = async () => {
+    const fetchAllChats = useCallback(async () => {
         const response = await fetch(`${CHATS_URL}/inbox/${userId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
         setChats(data);
-    };
+      }, [token, userId]);
 
     useEffect(() => {
         fetchAllChats();
-    }, []);
+    }, [fetchAllChats]);
     const getTimeString = (date) => {
         const diff = Math.round((new Date() - date) / 1000); // difference in seconds
         if (diff < 60) {

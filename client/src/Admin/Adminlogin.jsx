@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { json, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAdminLogin, setLogin } from "state";
-import { Box, Button, TextField, useMediaQuery, Typography, useTheme } from "@mui/material";
+import { setAdminLogin } from "state";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-
+ 
 
 
 const loginSchema = yup.object().shape({
@@ -18,11 +18,10 @@ const initialValuesLogin = { email: '',  password: ''}
 
 
 const AdminLoginPage = () => {
-    const { palette } = useTheme()
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isNonMobile = useMediaQuery("(min-width:600px)");
-
+   
     const [userNot, setUserNot] = useState(null);
 
     const login = async (values, onSubmitProps) => {

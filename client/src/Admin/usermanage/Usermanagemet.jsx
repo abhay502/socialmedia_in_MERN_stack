@@ -1,10 +1,13 @@
-import { Search } from "@mui/icons-material";
+import { DownloadOutlined, Search } from "@mui/icons-material";
 import AdminNavbar from "Admin/AdminNavbar";
 import { USERS_URL } from "Constants";
 import FlexBetween from "components/FlexBetween";
 import { useCallback, useEffect, useState } from "react";
 import {useSelector } from "react-redux";
 import io from 'socket.io-client';
+import jsPDF from 'jspdf';  
+import { blue } from "@mui/material/colors";
+
 
 
 
@@ -99,6 +102,8 @@ const Usermanagement = () => {
    values = Object.values(allUsers);
 
   } 
+
+  console.log("alll users",allUsers) 
  
   const handleSort = (column) => {
     if (orderBy === column && order === 'asc') {
@@ -120,6 +125,23 @@ const Usermanagement = () => {
     }
   });
 
+  const handleDownloadReport = () => {
+    const doc = new jsPDF();
+    doc.text(' ACTIVE AND BLOCKED USERS DETAILS  ', 10, 10);
+  
+    let y = 20; // Starting y position for the text
+    allUsers?.users.forEach((user, index) => {
+      doc.text(`${index + 1}. Name: ${user.firstName+" "+user.lastName}`, 10, y);
+      doc.text(`   Email: ${user.email}`, 10, y + 7);
+      doc.text(`   Location: ${user.location}`, 10, y + 14);
+      doc.text(`   Status: ${user.isActive ? "Active" : "Blocked"}`, 10, y + 21);
+      y += 28; // Increase the y position for the next user
+    });
+   
+    doc.save('USERSreport.pdf');
+  }
+  
+ 
 
 
   return (
@@ -130,6 +152,12 @@ const Usermanagement = () => {
         <Typography variant="h3" fontWeight={"bold"}>
           List Of All Users
         </Typography>  
+        <Box ml={"70rem"}>
+                <Button sx={{ backgroundColor: blue[600] }} onClick={handleDownloadReport}>
+                        <DownloadOutlined />
+                        Download Reports
+                    </Button> 
+                </Box>
         <TableContainer component={Paper}>
           <FormControlLabel sx={{ ml: '1rem' }}
             control={<Switch checked={showActive} onChange={(e) => setShowActive(e.target.checked)} />}

@@ -4,8 +4,8 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useCallback, useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
-
 import { setFriends } from "state";
+import ScrollableFeed from "react-scrollable-feed"; 
 
 
 const FriendListWidget =({ userId }) => {
@@ -34,30 +34,32 @@ const FriendListWidget =({ userId }) => {
        
     return(
         <WidgetWrapper position={isNonMobileScreens ? "fixed" : undefined} marginTop="10.7rem" width="25%">
-            <Typography 
+          <Typography 
             color={palette.neutral.dark}
             variant="h5"
             fontWeight="500"
             sx={{ mb:"1.5rem"}}
-            >
-               {friends.length<1? "0 Friends" : friends.length+ " Friends  List" } 
-            </Typography>
-
-            <Box display="flex" flexDirection="column" gap="1.5rem">
-            {
+          >
+            {friends.length<1? "0 Friends" : friends.length+ " Friends  List" } 
+          </Typography>
+    
+          <ScrollableFeed  style={{ overflowY: 'scroll', Width: "0px"}}>
+            <Box height={"17rem"} display="flex" flexDirection="column" gap="1.5rem">
+              { 
                 friends.length > 0 && friends?.map((friend) => (
-                    <Friend
-                    key={friend._id} // Add a unique key prop based on the friend's _id
+                  <Friend
+                    key={friend._id}
                     friendId={friend._id}
                     name={`${friend.firstName} ${friend.lastName}`}
                     subtitle={friend.location}
                     userPicturePath={friend.picturePath}
-                    />
+                  />
                 ))
-            } 
+              } 
             </Box>
+          </ScrollableFeed>
         </WidgetWrapper>
-    )
+      )
 
 }
 

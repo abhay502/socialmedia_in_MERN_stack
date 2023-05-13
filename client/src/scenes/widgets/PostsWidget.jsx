@@ -27,7 +27,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
     if (data.length === 0) {
       setNoPost(true);
     }
-    dispatch(setPosts({ posts: data }));
+    dispatch(setPosts({ posts: data })); 
   };
   
 
@@ -39,7 +39,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    const data = await response.json();
+    const data = await response.json(); 
   
     if (data.length === 0) {
       setNoPost(true);
@@ -50,7 +50,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
   
     return data; // return the data object for use in the Promise.all call
   };
-  
+   
 
   useEffect(() => {
     if (isProfile) {

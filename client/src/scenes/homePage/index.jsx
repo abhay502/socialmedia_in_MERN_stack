@@ -8,7 +8,7 @@ import MyPostWidget from "scenes/widgets/myPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget"; 
 import Navbar from "../navbar/Navbar" 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { USERS_URL } from "Constants";
 
  
@@ -16,29 +16,27 @@ import { USERS_URL } from "Constants";
 const HomePage = ()=>{ 
     const { _id }=useSelector((state)=> state.user);
     const token =useSelector((state)=>state.token);
-    console.log('user'+token)
+   
     const [user, setUser]= useState(null);
     
-    const getUser = async ()=>{
-        const response = await fetch(`${USERS_URL}/${_id}`,
-        {
-            method:"GET",
-            headers:{Authorization:`Bearer ${token}`} 
+    const getUser = useCallback(async () => {
+        const response = await fetch(`${USERS_URL}/${_id}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
         });
-
-        const data = await response.json() 
-        setUser(data) 
-    };
+        const data = await response.json();
+        setUser(data);
+      }, [token, _id]); 
 
     useEffect(()=>{ 
         getUser()  
-    },[]) 
+    },[getUser]) 
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)"); 
           
   
   
 
-    return(
+    return( 
           
             <Box  > 
 

@@ -6,7 +6,7 @@ const UserImage = ({ image, size = "60px" }) => {
   const [loading, setLoading] = useState(true);
 
   const handleLoad = () => {
-    setLoading(false);
+    setLoading(false); 
   };
 
   return (
@@ -28,9 +28,10 @@ const UserImage = ({ image, size = "60px" }) => {
           transition: "opacity 0.3s ease-in-out",
         }}
         width={size}
-        height={size}
+        height={size} 
         src={IMG_URL+image}
         onLoad={handleLoad}
+        alt=""
       />
     </Box>
   );

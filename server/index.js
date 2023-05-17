@@ -53,7 +53,7 @@ export const upload = multer({
     }
 });   
 
-//ROUTES WITH FILES
+//ROUTES WITH FILES 
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken,  upload.single("picture"),createPost)
 app.post("/posts/video", verifyToken,  upload.single("video"),createPost)

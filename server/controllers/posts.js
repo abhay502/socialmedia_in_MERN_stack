@@ -33,7 +33,7 @@ export const createPost = async (req,res)=>{
 export const getFeedPosts = async (req,res) =>{
     try {
         
-        const post = await Post.find().sort({ _id: -1 }); //this will find all the posts to front end after creating a new posts.
+        const post = await Post.find().sort({ _id:   -1 }); //this will find all the posts to front end after creating a new posts.
         res.status(200).json(post) //200 represents successfull request
 
     } catch (error) {

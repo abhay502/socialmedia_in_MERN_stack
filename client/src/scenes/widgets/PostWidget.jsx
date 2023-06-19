@@ -205,7 +205,8 @@ const PostWidget = ({
             />
           </div>
         )}
-        {videoPath && (
+       
+      {videoPath && (
           <div style={{ position: "relative" }}>
             {showLove && (
               <div style={{

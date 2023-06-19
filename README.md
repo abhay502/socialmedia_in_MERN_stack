@@ -1,10 +1,18 @@
 # FullStack Social Media App
 
-## Complete React MERN Full Stack Social Media App❤️
+## Complete  MERN Full Stack Social Media App❤️
 
- For users who are looking to contribute, I'm planning to possibly create a separate branch for community contributions and additional features as well as for improvements and fixes.
+* This is Complete  MERN Full Stack Social Media web-app.
+*  Using this platform, users can create an account and share
+their thoughts,ideas,photos and videos.
+ * This project is designed and developed with scalability and
+maintainability in mind with clean architecture and SOLID
+principles.
+*  This project has features like create post,edit post,like and
+comment post, report post, and delete post, realtime
+messaging and realtime blocking, OTP login, theme,
+notifications and many more
 
-I haven't decided on the exact workflow 🦆 I'll be using yet. But we'll get it out there soon!🙏🙏
 
 ## Technologies Used :
 
@@ -18,5 +26,11 @@ I haven't decided on the exact workflow 🦆 I'll be using yet. But we'll get it
 * Twilio
 * formik(for forms building)
 * yup
+* Node mailer
+* socket.io
+* multer,etc.
+  
+Deployed link: - https://snaplife.xyz/
 
+ For users who are looking to contribute, I'm planning to possibly create a separate branch for community contributions and additional features as well as for improvements and fixes.
 

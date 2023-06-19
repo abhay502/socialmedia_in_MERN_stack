@@ -28,6 +28,7 @@ notifications and many more
 * yup
 * Node mailer
 * socket.io
+* clean architecture
 * multer,etc.
   
 Deployed link: - https://snaplife.xyz/

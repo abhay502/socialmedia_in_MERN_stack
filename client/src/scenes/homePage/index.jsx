@@ -58,7 +58,8 @@ const HomePage = ()=>{
 
                          mt={isNonMobileScreens ? undefined :  "2rem"}>
                     <MyPostWidget picturePath={user?.picturePath} />
-                    <PostsWidget userId={_id}/>
+                    
+                     <PostsWidget userId={_id}/>
                         
                     </Box>
                    
